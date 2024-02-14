@@ -1,0 +1,61 @@
+<nav class="flex-row btw middle">
+  <!-- Logo -->
+  <div class="flex-row middle left">
+    <a routerLink="/home" class="logo" (click)="phoneMenuOpen = false">
+      <img src="assets/icons/logo.svg" alt="logo" />
+    </a>
+    <select name="lang-options" class="basic">
+      <option
+        *ngFor="let lang of supportedLanguages"
+        (click)="changeLang(lang.code)">
+        {{ lang.label }}
+      </option>
+    </select>
+  </div>
+
+  <!-- nav items -->
+  <div
+    class="flex-row menu middle content"
+    [ngClass]="{ active: phoneMenuOpen }">
+    <a
+      (click)="phoneMenuOpen = false"
+      routerLink="/starter-kit"
+      routerLinkActive="active"
+      >Starter kit</a
+    >
+    <a
+      *ngIf="!authService.connected"
+      (click)="phoneMenuOpen = false"
+      routerLink="auth/login"
+      routerLinkActive="active"
+      >{{ 'auth.login' | translate }}</a
+    >
+    <a
+      *ngIf="!authService.connected"
+      (click)="phoneMenuOpen = false"
+      routerLink="auth/register"
+      routerLinkActive="active"
+      class="btn primary"
+      >{{ 'auth.register' | translate }}</a
+    >
+    <a
+      *ngIf="authService.connected"
+      (click)="phoneMenuOpen = false"
+      routerLink="user/profile"
+      routerLinkActive="active"
+      >{{ 'auth.profile' | translate }}</a
+    >
+  </div>
+  <div class="menu nav-icon">
+    <img
+      *ngIf="!phoneMenuOpen"
+      (click)="phoneMenuOpen = true"
+      src="assets/icons/navbar.svg"
+      alt="open menu" />
+    <img
+      *ngIf="phoneMenuOpen"
+      (click)="phoneMenuOpen = false"
+      src="assets/icons/close.svg"
+      alt="close menu" />
+  </div>
+</nav>

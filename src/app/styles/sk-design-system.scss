@@ -1,0 +1,72 @@
+button,
+.btn {
+  font-size: 1rem;
+  &.big {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+  }
+  &.basic {
+    padding: 0.5rem 1rem;
+    border-radius: $radius;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: $shadow;
+  }
+  &.primary {
+    @extend .basic;
+    background-color: $primary;
+    color: $background;
+    &:hover {
+      background-color: darken($primary, 15%);
+    }
+  }
+  &.success {
+    @extend .basic;
+    background-color: $green;
+    color: $background;
+    &:hover {
+      background-color: darken($green, 10%);
+    }
+  }
+  &.danger {
+    @extend .basic;
+    background-color: $red;
+    color: $background;
+    &:hover {
+      background-color: darken($red, 10%);
+    }
+  }
+  &.warning {
+    @extend .basic;
+    background-color: $yellow;
+    color: $text1;
+    &:hover {
+      background-color: darken($yellow, 10%);
+    }
+  }
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+input,
+select,
+textarea {
+  &.basic {
+    font-size: 1rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: $radius;
+    border: none;
+    background-color: white;
+    box-shadow: $shadow;
+    &:focus {
+      outline: $primary 2px solid;
+    }
+  }
+}
+
+textarea {
+  resize: none;
+}
