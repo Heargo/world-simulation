@@ -140,8 +140,8 @@ export enum BurgType {
 
 export interface Burg {
   cell?: number;
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
   state?: number;
   i?: number;
   culture?: number;

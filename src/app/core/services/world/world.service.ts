@@ -3,6 +3,10 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, take } from 'rxjs';
 import { BiomesData, Burg, MapData, World } from '../../models/world/world';
 import { WorldRaw } from '../../models/world/world-raw';
+import {
+  Path,
+  TransportationGrid,
+} from '../../models/world/transportation-grid';
 
 @Injectable({
   providedIn: 'root',
@@ -127,15 +131,63 @@ export class WorldService {
     return 0;
   }
 
-  findCityWithPath(): Burg | undefined {
-    let cells = this.world.mapData.cells;
-    let burg: Burg | undefined = undefined;
-    for (let i = 0; i < cells.length; i++) {
-      if (cells[i].road > 0) {
-        console.log('found burg with path', cells[i].road);
-        burg = this.world.mapData.burgs.find(b => b.i == cells[i].burg)!;
+  findAllPaths(type: string): SVGPathElement[] {
+    let paths: SVGPathElement[] = [];
+    let allPaths = this.svgMap.getElementsByTagName('path');
+    for (let i = 0; i < allPaths.length; i++) {
+      let path = allPaths[i] as unknown as SVGPathElement;
+      if (path.id.includes(type)) {
+        paths.push(path);
       }
     }
-    return burg;
+    return paths;
+  }
+
+  getGroundTransportationGrid(): TransportationGrid {
+    let ground = new TransportationGrid();
+
+    const pathType = ['road', 'trail'];
+
+    for (let burg of this.world.mapData.burgs) {
+      ground.addNode(burg.x, burg.y, burg);
+    }
+
+    for (let type of pathType) {
+      let paths = this.findAllPaths(type);
+      for (let path of paths) {
+        let length = path.getTotalLength();
+        //get both extremities of the path
+        let start = path.getPointAtLength(0);
+        let end = path.getPointAtLength(100);
+
+        let node1 = ground.addNode(start.x, start.y);
+        let node2 = ground.addNode(end.x, end.y);
+        ground.addEdge(node1.id, node2.id, length);
+      }
+    }
+    return ground;
+  }
+
+  getBurgByName(name: string): Burg | null {
+    for (let burg of this.world.mapData.burgs) {
+      if (burg.name == name) {
+        return burg;
+      }
+    }
+    return null;
+  }
+
+  getPathBetweenBurgs(burg1: string, burg2: string): Path {
+    let grid = this.getGroundTransportationGrid();
+    let burg1_ = this.getBurgByName(burg1);
+    let burg2_ = this.getBurgByName(burg2);
+    let path: Path;
+    if (burg1_ && burg2_) {
+      let b1 = grid.getNodeClosestTo(burg1_.x, burg1_.y);
+      let b2 = grid.getNodeClosestTo(burg2_.x, burg2_.y);
+      console.log('b1', b1, 'b2', b2);
+      path = grid.shortestPath(b1.id, b2.id);
+    }
+    return path!;
   }
 }
