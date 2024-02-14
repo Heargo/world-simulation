@@ -7,6 +7,7 @@ import {
   Path,
   TransportationGrid,
 } from '../../models/world/transportation-grid';
+import intersect from 'path-intersection';
 
 @Injectable({
   providedIn: 'root',
@@ -143,6 +144,39 @@ export class WorldService {
     return paths;
   }
 
+  findIntersectionsWithPath(
+    path1: SVGPathElement,
+    path2: SVGPathElement
+  ): { point: SVGPoint | null; length1: number; length2: number } {
+    let intersection: {
+      point: SVGPoint | null;
+      length1: number;
+      length2: number;
+    } = {
+      point: null,
+      length1: 0,
+      length2: 0,
+    };
+    let precision = 1;
+    let length1 = path1.getTotalLength();
+    let length2 = path2.getTotalLength();
+    for (let len = 0; len < length1; len += precision) {
+      let point = path1.getPointAtLength(len);
+      if (path2.isPointInFill(point)) {
+        intersection = { point: point, length1: len, length2: -1 };
+      }
+    }
+
+    for (let len = 0; len < length2; len += precision) {
+      let point = path2.getPointAtLength(len);
+      if (path1.isPointInFill(point)) {
+        intersection.length2 = len;
+      }
+    }
+
+    return intersection;
+  }
+
   getGroundTransportationGrid(): TransportationGrid {
     let ground = new TransportationGrid();
 
@@ -154,15 +188,58 @@ export class WorldService {
 
     for (let type of pathType) {
       let paths = this.findAllPaths(type);
-      for (let path of paths) {
-        let length = path.getTotalLength();
-        //get both extremities of the path
-        let start = path.getPointAtLength(0);
-        let end = path.getPointAtLength(100);
+      for (let path1 of paths) {
+        for (let path2 of paths) {
+          if (path1 == path2) {
+            console.log('same path');
+            continue;
+          }
+          // let intersection = this.findIntersectionsWithPath(path1, path2);
+          let intersections = intersect(
+            path1.getAttribute('d')!,
+            path2.getAttribute('d')!
+          );
+          // console.log('intersection', intersections);
+          for (let intersection of intersections) {
+            console.log(
+              'intersection found between',
+              path1.id,
+              path2.id,
+              intersection
+            );
+            // create intersection as node
+            // let intersectNode = ground.addNode(
+            //   intersection.point.x,
+            //   intersection.point.y
+            // );
+            // let p1_start = path1.getPointAtLength(0);
+            // let p1_end = path1.getPointAtLength(path1.getTotalLength());
 
-        let node1 = ground.addNode(start.x, start.y);
-        let node2 = ground.addNode(end.x, end.y);
-        ground.addEdge(node1.id, node2.id, length);
+            // let p2_start = path2.getPointAtLength(0);
+            // let p2_end = path2.getPointAtLength(path2.getTotalLength());
+
+            // ground.addEdge(
+            //   ground.getNodeClosestTo(p1_start.x, p1_start.y).id,
+            //   intersectNode.id,
+            //   intersection.length1
+            // );
+            // ground.addEdge(
+            //   ground.getNodeClosestTo(p1_end.x, p1_end.y).id,
+            //   intersectNode.id,
+            //   path1.getTotalLength() - intersection.length1
+            // );
+            // ground.addEdge(
+            //   ground.getNodeClosestTo(p2_start.x, p2_start.y).id,
+            //   intersectNode.id,
+            //   intersection.length2
+            // );
+            // ground.addEdge(
+            //   ground.getNodeClosestTo(p2_end.x, p2_end.y).id,
+            //   intersectNode.id,
+            //   path2.getTotalLength() - intersection.length2
+            // );
+          }
+        }
       }
     }
     return ground;
