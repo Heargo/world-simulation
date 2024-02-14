@@ -33,6 +33,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/user/user.module').then(m => m.UserModule),
   },
+  {
+    path: ROUTES.worldSimulation,
+    loadChildren: () =>
+      import('./modules/world-simulation/world-simulation.module').then(
+        m => m.WorldSimulationModule
+      ),
+  },
   { path: ROUTES.notFound, component: NotFoundComponent },
   { path: '**', redirectTo: ROUTES.notFound },
 ];

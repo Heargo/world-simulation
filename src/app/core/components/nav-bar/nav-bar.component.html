@@ -24,6 +24,12 @@
       >Starter kit</a
     >
     <a
+      (click)="phoneMenuOpen = false"
+      routerLink="/world-simulation"
+      routerLinkActive="active"
+      >World Sim</a
+    >
+    <a
       *ngIf="!authService.connected"
       (click)="phoneMenuOpen = false"
       routerLink="auth/login"

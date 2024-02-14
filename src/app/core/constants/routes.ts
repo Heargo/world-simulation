@@ -4,4 +4,5 @@ export const ROUTES = {
   authentification: 'auth',
   user: 'user',
   notFound: '404',
+  worldSimulation: 'world-simulation',
 };
