@@ -143,7 +143,7 @@ export interface Burg {
   x: number;
   y: number;
   state?: number;
-  i?: number;
+  id?: number;
   culture?: number;
   name?: string;
   feature?: number;

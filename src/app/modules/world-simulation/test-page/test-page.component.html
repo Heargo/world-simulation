@@ -1,8 +1,11 @@
 <div class="main-container">
   <p>ok</p>
   <div
+    *ngIf="!worldService.loadComplete"
     appMutationObserverDirective
     (innerHtmlRendered)="onSvgRendered()"
     id="svg-map-container"
     [innerHTML]="worldService.svgMapDisplay"></div>
+
+  <canvas #canva [width]="768 * 1.5" [height]="351 * 1.5"></canvas>
 </div>

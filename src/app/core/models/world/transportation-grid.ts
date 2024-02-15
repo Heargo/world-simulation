@@ -24,29 +24,44 @@ export class TransportationGrid {
   constructor(
     private nodes: Node[] = [],
     private edges: Edge[] = [],
-    private precision: number = 0.5
+    private precision: number = 1.5
   ) {
     this.edges = edges;
     this.nodes = nodes;
   }
 
   addNode(x: number, y: number, relatedBurg?: Burg) {
+    console.log('add node', x, y, relatedBurg?.name);
     // add a new node to the grid if it doesn't already close to another node (within acceptable distance)
-    let node = this.nodes.find(node => {
-      return (
-        Math.abs(node.x - x) < this.precision &&
-        Math.abs(node.y - y) < this.precision
-      );
-    });
-    if (!node) {
-      node = { id: TransportationGrid.NODE_ID++, x, y, relatedBurg };
-      this.nodes.push(node);
-    }
+    // let node = this.nodes.find(n => {
+    //   let dist = Math.sqrt(Math.pow(n.x - x, 2) + Math.pow(n.y - y, 2));
+    //   return dist < this.precision;
+    // });
+    // if (!node) {
+    let node = { id: TransportationGrid.NODE_ID++, x, y, relatedBurg };
+    this.nodes.push(node);
+    // } else {
+    //   console.log(
+    //     'for related burg',
+    //     relatedBurg?.name,
+    //     'node',
+    //     node.id,
+    //     'x',
+    //     node.x,
+    //     'y',
+    //     node.y,
+    //     'added instead'
+    //   );
+    // }
     return node;
   }
 
   getNodes() {
     return this.nodes;
+  }
+
+  getEdges() {
+    return this.edges;
   }
 
   getNode(id: number) {
@@ -86,6 +101,100 @@ export class TransportationGrid {
         } ]--> ${end?.relatedBurg ? end?.relatedBurg?.name : end?.id}`
       );
     });
+  }
+
+  mergeNodes(precision: number) {
+    let alreadyMergedId: number[] = [];
+    let nodes = [...this.nodes];
+    for (let i = 0; i < nodes.length; i++) {
+      let node = nodes[i];
+      //order nodes by distance to the current node
+      let closeNodes = nodes.filter((n, index) => {
+        if (index != i) {
+          let dist = Math.sqrt(
+            Math.pow(n.x - node.x, 2) + Math.pow(n.y - node.y, 2)
+          );
+          return dist < precision;
+        } else {
+          return false;
+        }
+      });
+
+      //sort by closest
+      closeNodes.sort((a, b) => {
+        let distA = Math.sqrt(
+          Math.pow(a.x - node.x, 2) + Math.pow(a.y - node.y, 2)
+        );
+        let distB = Math.sqrt(
+          Math.pow(b.x - node.x, 2) + Math.pow(b.y - node.y, 2)
+        );
+        return distA - distB;
+      });
+
+      //find the closest node that has not already been merged
+      if (closeNodes.length > 0) {
+        let closestNode: Node | null = null;
+        for (let j = 0; j < closeNodes.length; j++) {
+          if (!alreadyMergedId.includes(closeNodes[j].id)) {
+            closestNode = closeNodes[j];
+            break;
+          }
+        }
+        //merge the nodes
+        if (closestNode) {
+          //the node with a burg is the one that will be kept, the other will be removed
+          let nodeToReplace: Node;
+          let nodeToKeep: Node;
+          if (node.relatedBurg) {
+            nodeToReplace = closestNode;
+            nodeToKeep = node;
+          } else {
+            nodeToReplace = node;
+            nodeToKeep = closestNode;
+          }
+          //replace the node in the edges
+          this.edges.forEach(edge => {
+            if (edge.nodes.includes(nodeToReplace!.id)) {
+              let index = edge.nodes.indexOf(nodeToReplace!.id);
+              edge.nodes[index] = nodeToKeep.id;
+            }
+          });
+
+          //remove the node
+          // this.nodes = this.nodes.filter(n => n.id != nodeToReplace.id);
+          //add the node to the already merged list
+          alreadyMergedId.push(nodeToReplace.id);
+        }
+      }
+    }
+  }
+
+  getUnconnectNode(): Node[] {
+    let unconnected: Node[] = [];
+    this.nodes.forEach(node => {
+      let connected = this.edges.some(edge => edge.nodes.includes(node.id));
+      if (!connected) {
+        unconnected.push(node);
+      }
+    });
+    return unconnected;
+  }
+
+  getUnconnectBurg(): Node[] {
+    let unconnected = this.getUnconnectNode();
+    let unconnectedBurg = unconnected.filter(node => node.relatedBurg);
+    return unconnectedBurg;
+  }
+
+  getConnectedNodes(): Node[] {
+    let connected: Node[] = [];
+    this.nodes.forEach(node => {
+      let isConnected = this.edges.some(edge => edge.nodes.includes(node.id));
+      if (isConnected) {
+        connected.push(node);
+      }
+    });
+    return connected;
   }
 
   getNodeClosestTo(x: number, y: number): Node {

@@ -23,6 +23,8 @@ export class WorldService {
   ground_grid!: TransportationGrid;
   sea_grid!: TransportationGrid;
 
+  loadComplete = false;
+
   constructor(
     private readonly http: HttpClient,
     private readonly domSanitize: DomSanitizer
@@ -168,7 +170,7 @@ export class WorldService {
       length1: 0,
       length2: 0,
     };
-    let precision = 1;
+    let precision = 0.1;
     let length1 = path1.getTotalLength();
     let length2 = path2.getTotalLength();
     for (let len = 0; len < length1; len += precision) {
@@ -191,7 +193,7 @@ export class WorldService {
   getEdgesFromPathAndPoints(path: SVGPathElement, points: Node[]): Edge[] {
     let edges: Edge[] = [];
     let pointsRelativesPositions = [];
-    let errorMargin = 1.5;
+    let errorMargin = 1;
     let unplotedPoints = [...points];
     //add start and end to unplotedpoints
     for (let len = 0; len < path.getTotalLength(); len += 1) {
@@ -226,7 +228,7 @@ export class WorldService {
 
   loadTransportationGrids(svg: SVGSVGElement) {
     this.ground_grid = this.loadTransportationGrid(svg, ['road', 'trail']);
-    this.sea_grid = this.loadTransportationGrid(svg, ['searoute']);
+    // this.sea_grid = this.loadTransportationGrid(svg, ['searoute']);
   }
 
   private loadTransportationGrid(
@@ -247,10 +249,12 @@ export class WorldService {
     }
     //add all path extremities as nodes
     for (let p of paths) {
-      let start_path = p.getPointAtLength(0);
-      let end_path = p.getPointAtLength(p.getTotalLength());
-      grid.addNode(start_path.x, start_path.y);
-      grid.addNode(end_path.x, end_path.y);
+      let start_path = p.getPointAtLength(1);
+      let end_path = p.getPointAtLength(p.getTotalLength() - 1);
+      console.log('adding extremities for path', p.id);
+      let s = grid.addNode(start_path.x, start_path.y);
+      let e = grid.addNode(end_path.x, end_path.y);
+      console.log('start', s, 'end', e, 'for path', p.id);
     }
 
     //show nodes on paths
@@ -258,9 +262,10 @@ export class WorldService {
     for (const p of paths) {
       let isPointInPath;
       let pointsInPath: Node[] = [];
+      console.log('checking path', p.id, 'for points');
       for (const point of points) {
         //force bigger stroke width for better precision
-        p.style.strokeWidth = '5';
+        p.setAttribute('stroke-width', '10');
         //no dash
         p.style.strokeDasharray = 'none';
         try {
@@ -277,11 +282,24 @@ export class WorldService {
         if (isPointInPath) {
           console.log('in stroke', p.id, ' there is', point.relatedBurg?.name);
           pointsInPath.push(point);
+        } else {
+          if (p.id == 'trail75') {
+            console.log(
+              'not in stroke',
+              p.id,
+              ' there is',
+              point.relatedBurg?.name,
+              'at',
+              point.x,
+              point.y
+            );
+          }
         }
       }
       let new_paths = this.getEdgesFromPathAndPoints(p, pointsInPath);
       grid.addEdges(new_paths);
     }
+    grid.mergeNodes(1.5);
     return grid;
   }
 
