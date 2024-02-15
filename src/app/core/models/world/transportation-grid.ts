@@ -31,28 +31,9 @@ export class TransportationGrid {
   }
 
   addNode(x: number, y: number, relatedBurg?: Burg) {
-    console.log('add node', x, y, relatedBurg?.name);
-    // add a new node to the grid if it doesn't already close to another node (within acceptable distance)
-    // let node = this.nodes.find(n => {
-    //   let dist = Math.sqrt(Math.pow(n.x - x, 2) + Math.pow(n.y - y, 2));
-    //   return dist < this.precision;
-    // });
-    // if (!node) {
     let node = { id: TransportationGrid.NODE_ID++, x, y, relatedBurg };
+    console.log('add node', node.id, relatedBurg?.name, node);
     this.nodes.push(node);
-    // } else {
-    //   console.log(
-    //     'for related burg',
-    //     relatedBurg?.name,
-    //     'node',
-    //     node.id,
-    //     'x',
-    //     node.x,
-    //     'y',
-    //     node.y,
-    //     'added instead'
-    //   );
-    // }
     return node;
   }
 
@@ -103,9 +84,14 @@ export class TransportationGrid {
     });
   }
 
+  getNodeConnections(nodeId: number) {
+    return this.edges.filter(edge => edge.nodes.includes(nodeId));
+  }
+
   mergeNodes(precision: number) {
     let alreadyMergedId: number[] = [];
     let nodes = [...this.nodes];
+    console.log('before merging nodes', this.nodes.length, 'nodes');
     for (let i = 0; i < nodes.length; i++) {
       let node = nodes[i];
       //order nodes by distance to the current node
@@ -161,12 +147,52 @@ export class TransportationGrid {
           });
 
           //remove the node
-          // this.nodes = this.nodes.filter(n => n.id != nodeToReplace.id);
+          console.log(
+            'remove node',
+            nodeToReplace.id,
+            'and keep',
+            nodeToKeep.id
+          );
+          this.nodes = this.nodes.filter(n => n.id != nodeToReplace.id);
           //add the node to the already merged list
           alreadyMergedId.push(nodeToReplace.id);
         }
       }
     }
+    console.log('after merging nodes', this.nodes.length, 'nodes left');
+    //reset all the ids to avoid holes
+    let convertionIds: { [key: number]: number } = {};
+    this.nodes.forEach((node, index) => {
+      convertionIds[node.id] = index;
+      node.id = index;
+    });
+    this.edges.forEach(edge => {
+      let old_ids = edge.nodes;
+      edge.nodes = edge.nodes.map(id => convertionIds[id]);
+      if (edge.nodes[0] == undefined || edge.nodes[1] == undefined) {
+        console.warn(
+          'edge',
+          edge,
+          'has undefined nodes',
+          'old ids are',
+          old_ids,
+          'will be removed'
+        );
+      }
+    });
+    //remove edges with undefined nodes
+    this.edges = this.edges.filter(edge => {
+      return edge.nodes[0] != undefined && edge.nodes[1] != undefined;
+    });
+    this.edges = this.edges.filter(edge => {
+      return edge.nodes[0] !== edge.nodes[1];
+    });
+    //look for all edges that have  a length of 0 and set it to 0.1
+    this.edges.forEach(edge => {
+      if (edge.length == 0) {
+        edge.length = 0.1;
+      }
+    });
   }
 
   getUnconnectNode(): Node[] {
@@ -226,6 +252,20 @@ export class TransportationGrid {
     return closest;
   }
 
+  getMatriceAdjacence() {
+    let matriceAdjacence: any[][] = [];
+    for (let i = 0; i < this.nodes.length; i++) {
+      matriceAdjacence.push(new Array(this.nodes.length).fill(0));
+    }
+
+    this.edges.forEach(edge => {
+      matriceAdjacence[edge.nodes[0]][edge.nodes[1]] = 1;
+      matriceAdjacence[edge.nodes[1]][edge.nodes[0]] = 1;
+    });
+
+    return matriceAdjacence;
+  }
+
   getMatriceAdjacencePondere() {
     let matriceAdjacence: any[][] = [];
     for (let i = 0; i < this.nodes.length; i++) {
@@ -233,6 +273,7 @@ export class TransportationGrid {
     }
 
     this.edges.forEach(edge => {
+      // console.log('edge', edge);
       matriceAdjacence[edge.nodes[0]][edge.nodes[1]] = edge.length;
       matriceAdjacence[edge.nodes[1]][edge.nodes[0]] = edge.length;
     });

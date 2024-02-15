@@ -300,6 +300,9 @@ export class WorldService {
       grid.addEdges(new_paths);
     }
     grid.mergeNodes(1.5);
+    console.log('grid matrice ad ', grid.getMatriceAdjacence());
+    console.log('grid matrice pond ', grid.getMatriceAdjacencePondere());
+    console.log('grid', grid);
     return grid;
   }
 
@@ -310,6 +313,10 @@ export class WorldService {
       }
     }
     return null;
+  }
+
+  getPathBetweenNodes(nodeID1: number, nodeID2: number): Path {
+    return this.ground_grid.shortestPath(nodeID1, nodeID2);
   }
 
   getPathBetweenBurgs(burg1: string, burg2: string): Path {

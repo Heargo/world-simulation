@@ -51,7 +51,9 @@ export class TestPageComponent implements OnInit {
 
     this.worldService.loadTransportationGrids(svg);
     this.worldService.loadComplete = true;
-    let p = this.worldService.getPathBetweenBurgs('Viciglio', 'Theolissos'); //!FIX THIS
+    let p = this.worldService.getPathBetweenBurgs('Viciglio', 'Monano'); //!FIX THIS Viciglio->Monzanello ok but Viciglio->Monano not ok
+    let debugPath = this.worldService.getPathBetweenNodes(15, 162);
+    console.log('debugPath', debugPath);
     console.log('path between ', p);
     console.log(
       'unconnected nodes: ',
@@ -93,18 +95,32 @@ export class TestPageComponent implements OnInit {
     const ctx = this.canvas.nativeElement.getContext('2d')!;
     //draw all nodes
     let nodes = this.worldService.ground_grid.getConnectedNodes();
+    let unconnectedNodes = this.worldService.ground_grid.getUnconnectNode();
+
     nodes.forEach(node => {
       //adapt node position to fit canvas size
       let newPos = this.convertPositionToCanvas([node.x, node.y], mapSize, [
         this.canvas.nativeElement.width,
         this.canvas.nativeElement.height,
       ]);
-      //red if unconnected, green if a burg is related to the node else black
-      if (node.relatedBurg) {
-        this.drawNode(ctx, newPos, 'green', 3);
+      //red if unconnected red, green if a burg is related to the node else black
+      if (unconnectedNodes.includes(node)) {
+        this.drawNode(ctx, newPos, 'red', 3);
       } else {
-        this.drawNode(ctx, newPos, 'black', 2);
+        let connected = this.worldService.ground_grid.getNodeConnections(
+          node.id
+        );
+        let colors = ['black', 'green', 'blue', 'purple', 'orange', 'yellow'];
+        this.drawNode(ctx, newPos, colors[connected.length], 3);
       }
+      //draw name of the node above the node
+      ctx.font = '10px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(
+        node.id.toString() + ' ' + node.relatedBurg?.name,
+        newPos[0],
+        newPos[1] - 10
+      );
     });
     let edges = this.worldService.ground_grid.getEdges();
 
