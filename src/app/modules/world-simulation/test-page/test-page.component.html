@@ -1,3 +1,8 @@
 <div class="main-container">
   <p>ok</p>
+  <div
+    appMutationObserverDirective
+    (innerHtmlRendered)="onSvgRendered()"
+    id="svg-map-container"
+    [innerHTML]="worldService.svgMapDisplay"></div>
 </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WorldService } from '../../../core/services/world/world.service';
 import { firstValueFrom } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-test-page',
@@ -8,7 +9,10 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./test-page.component.scss'],
 })
 export class TestPageComponent implements OnInit {
-  constructor(private readonly worldService: WorldService) {}
+  constructor(
+    public readonly worldService: WorldService,
+    private readonly domSanitize: DomSanitizer
+  ) {}
 
   async ngOnInit(): Promise<void> {
     await firstValueFrom(
@@ -33,7 +37,17 @@ export class TestPageComponent implements OnInit {
     // tr_grid.addEdge(1, 3, 2);
     // let path = tr_grid.shortestPath(0, 3);
     // console.log(path);
+  }
+
+  onSvgRendered() {
+    console.log('svg rendered');
+    const container = document.getElementById('svg-map-container')!;
+
+    const svg = container.querySelector('svg')!;
+    console.log('svg', svg);
+
+    this.worldService.loadGroundTransportationGrid(svg);
     let p = this.worldService.getPathBetweenBurgs('Oziepieds', 'Nympsostias');
-    console.log(p);
+    console.log('path between Oziepieds and Nympsostias', p);
   }
 }

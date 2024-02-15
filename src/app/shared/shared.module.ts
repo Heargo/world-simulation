@@ -4,9 +4,14 @@ import { ModalComponent } from './components/modal/modal.component';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { MutationObserverDirective } from './directives/mutation-observer.directive';
 
 @NgModule({
-  declarations: [ModalComponent, ConfirmModalComponent],
+  declarations: [
+    ModalComponent,
+    ConfirmModalComponent,
+    MutationObserverDirective,
+  ],
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   exports: [
     ModalComponent,
@@ -14,6 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
+    MutationObserverDirective,
   ],
 })
 export class SharedModule {}

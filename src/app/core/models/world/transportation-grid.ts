@@ -45,6 +45,10 @@ export class TransportationGrid {
     return node;
   }
 
+  getNodes() {
+    return this.nodes;
+  }
+
   addEdge(node1: number, node2: number, length: number) {
     // add a new edge to the grid if it doesn't already exist
     let id = TransportationGrid.EDGE_ID++;
