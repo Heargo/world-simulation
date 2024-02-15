@@ -46,8 +46,8 @@ export class TestPageComponent implements OnInit {
     const svg = container.querySelector('svg')!;
     console.log('svg', svg);
 
-    this.worldService.loadGroundTransportationGrid(svg);
-    let p = this.worldService.getPathBetweenBurgs('Oziepieds', 'Nympsostias');
-    console.log('path between Oziepieds and Nympsostias', p);
+    this.worldService.loadTransportationGrids(svg);
+    let p = this.worldService.getPathBetweenBurgs('Kistecel', 'Onalmatad');
+    console.log('path between ', p);
   }
 }

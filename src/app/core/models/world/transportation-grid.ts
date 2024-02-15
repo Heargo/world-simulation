@@ -49,6 +49,10 @@ export class TransportationGrid {
     return this.nodes;
   }
 
+  getNode(id: number) {
+    return this.nodes.find(node => node.id == id);
+  }
+
   addEdge(node1: number, node2: number, length: number) {
     // add a new edge to the grid if it doesn't already exist
     let id = TransportationGrid.EDGE_ID++;
@@ -58,6 +62,30 @@ export class TransportationGrid {
     if (!exists) {
       this.edges.push({ id, length, nodes: [node1, node2] });
     }
+  }
+
+  addEdges(ed: Edge[]) {
+    ed.forEach(e => {
+      let exists = this.edges.some(
+        edge =>
+          edge.nodes.includes(e.nodes[0]) && edge.nodes.includes(e.nodes[1])
+      );
+      if (!exists) {
+        this.edges.push(e);
+      }
+    });
+  }
+
+  showEdges(edges: Edge[]) {
+    edges.forEach(edge => {
+      let start = this.getNode(edge.nodes[0]);
+      let end = this.getNode(edge.nodes[1]);
+      console.log(
+        `${start?.relatedBurg ? start?.relatedBurg?.name : start?.id} --[ ${
+          edge.length
+        } ]--> ${end?.relatedBurg ? end?.relatedBurg?.name : end?.id}`
+      );
+    });
   }
 
   getNodeClosestTo(x: number, y: number): Node {
