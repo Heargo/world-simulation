@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, take } from 'rxjs';
-import { BiomesData, Burg, MapData, World } from '../../models/world/world';
-import { WorldRaw } from '../../models/world/world-raw';
+import { BiomesData, MapData, World } from '../../models/world/world';
+import { DiplomacyEnum, WorldRaw } from '../../models/world/world-raw';
 import {
   Edge,
   Node,
@@ -10,6 +10,7 @@ import {
   TransportationGrid,
 } from '../../models/world/transportation-grid';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Burg } from '../../models/world/burg';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +49,7 @@ export class WorldService {
       map(raw => {
         if (raw) {
           this.world = this.convertRawToModel(raw);
-          console.log('World loaded, ready to use');
+          console.log('World loaded, ready to use', this.world);
           return true;
         }
         return false;
@@ -75,72 +76,7 @@ export class WorldService {
   }
 
   private convertRawToModel(raw: WorldRaw): World {
-    let world: World = {} as World;
-
-    world.info = raw.info;
-    world.mapCoordinates = raw.mapCoordinates;
-    world.biomesData = this.convertBiomeData(raw.biomesData);
-    world.mapData = this.convertMapData(raw.pack);
-    world = this.convertWithProperId(world);
-    return world;
-  }
-
-  private convertBiomeData(raw: any): BiomesData[] {
-    let biomesData: BiomesData[] = [];
-    for (let i = 0; i < raw.i.length; i++) {
-      let id = raw.i[i];
-      let b = {
-        id: id,
-        name: raw.name[i],
-        color: raw.color[i],
-        biomesMartix: raw.biomesMartix[i],
-        habitability: raw.habitability[i],
-        iconsDensity: raw.iconsDensity[i],
-        icons: raw.icons[i],
-        cost: raw.cost[i],
-      } as BiomesData;
-      biomesData.push(b);
-    }
-    return biomesData;
-  }
-
-  private convertWithProperId(raw: any): any {
-    let result: any = JSON.parse(JSON.stringify(raw));
-    for (let key in raw) {
-      //rename key i to id for better readability
-      if (key == 'i') {
-        result['id'] = raw.i;
-        delete result.i;
-      }
-
-      //if object, convert it if list convert all objects in list
-      if (Object.prototype.toString.call(raw[key]) == '[object Object]') {
-        result[key] = this.convertWithProperId(raw[key]);
-      }
-
-      if (Object.prototype.toString.call(raw[key]) == '[object Array]') {
-        result[key] = [];
-        for (let i = 0; i < raw[key].length; i++) {
-          result[key].push(this.convertWithProperId(raw[key][i]));
-        }
-      }
-    }
-    return result;
-  }
-
-  private convertMapData(raw: any): MapData {
-    //remove vertices
-    delete raw.vertices;
-    return raw as MapData;
-  }
-
-  getPathLength(id: string): number {
-    // find path named trail+num and return its length
-    let path = this.svgMap.getElementById(id) as unknown as SVGPathElement;
-    if (path) {
-      return path.getTotalLength();
-    }
-    return 0;
+    return new World(raw);
   }
 
   findAllPaths(type: string, svg: SVGElement): SVGPathElement[] {
@@ -153,39 +89,6 @@ export class WorldService {
       }
     }
     return paths;
-  }
-
-  findIntersectionsWithPath(
-    path1: SVGPathElement,
-    path2: SVGPathElement
-  ): { point: SVGPoint | null; length1: number; length2: number } {
-    let intersection: {
-      point: SVGPoint | null;
-      length1: number;
-      length2: number;
-    } = {
-      point: null,
-      length1: 0,
-      length2: 0,
-    };
-    let precision = 0.1;
-    let length1 = path1.getTotalLength();
-    let length2 = path2.getTotalLength();
-    for (let len = 0; len < length1; len += precision) {
-      let point = path1.getPointAtLength(len);
-      if (path2.isPointInFill(point)) {
-        intersection = { point: point, length1: len, length2: -1 };
-      }
-    }
-
-    for (let len = 0; len < length2; len += precision) {
-      let point = path2.getPointAtLength(len);
-      if (path1.isPointInFill(point)) {
-        intersection.length2 = len;
-      }
-    }
-
-    return intersection;
   }
 
   getEdgesFromPathAndPoints(path: SVGPathElement, points: Node[]): Edge[] {
@@ -226,7 +129,7 @@ export class WorldService {
 
   loadTransportationGrids(svg: SVGSVGElement) {
     this.ground_grid = this.loadTransportationGrid(svg, ['road', 'trail']);
-    // this.sea_grid = this.loadTransportationGrid(svg, ['searoute']);
+    this.sea_grid = this.loadTransportationGrid(svg, ['searoute']);
   }
 
   private loadTransportationGrid(
@@ -245,10 +148,10 @@ export class WorldService {
     for (let type of pathType) {
       paths = paths.concat(this.findAllPaths(type, svg));
     }
-    //add all path extremities as nodes
+    //add all path extremities as nodes (with a 0.1 padding so it's considered on the path)
     for (let p of paths) {
-      let start_path = p.getPointAtLength(1);
-      let end_path = p.getPointAtLength(p.getTotalLength() - 1);
+      let start_path = p.getPointAtLength(0.1);
+      let end_path = p.getPointAtLength(p.getTotalLength() - 0.1);
       let s = grid.addNode(start_path.x, start_path.y);
       let e = grid.addNode(end_path.x, end_path.y);
     }
@@ -281,6 +184,7 @@ export class WorldService {
       grid.addEdges(new_paths);
     }
     grid.mergeNodes(1.5); //merge nodes that are closer than 1.5 units to each other
+    grid.calculatePaths(); //calculate shortest paths
     return grid;
   }
 
@@ -307,5 +211,40 @@ export class WorldService {
       path = this.ground_grid.shortestPath(b1.id, b2.id);
     }
     return path!;
+  }
+
+  getBurgsByAttractivity(burgId: number): Burg[] {
+    let burg = this.world.mapData.burgs.find(b => b.id === burgId)!;
+    let state = burg.state;
+    let otherBurgs = [...this.world.mapData.burgs.filter(b => b.id !== burgId)];
+
+    //order by attractivity
+    otherBurgs.sort((a, b) => {
+      let diplomacyA = this.world.mapData.states[state!].diplomacy[a.state!];
+      let diplomacyB = this.world.mapData.states[state!].diplomacy[b.state!];
+
+      let distanceA = this.ground_grid.getDistanceBetweenTwoBurgs(
+        burgId,
+        a.id!
+      );
+      let distanceB = this.ground_grid.getDistanceBetweenTwoBurgs(
+        burgId,
+        b.id!
+      );
+      return (
+        burg!.getRelativeAttractivity(
+          diplomacyB as DiplomacyEnum,
+          distanceB,
+          state === b.state
+        ) -
+        burg!.getRelativeAttractivity(
+          diplomacyA as DiplomacyEnum,
+          distanceA,
+          state === a.state
+        )
+      );
+    });
+
+    return otherBurgs;
   }
 }

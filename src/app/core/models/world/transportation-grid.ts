@@ -1,4 +1,4 @@
-import { Burg } from './world';
+import { Burg } from './burg';
 
 export interface Node {
   id: number;
@@ -21,6 +21,13 @@ export interface Path {
 export class TransportationGrid {
   static NODE_ID = 0;
   static EDGE_ID = 0;
+
+  private floydWarshall!: {
+    dist: number[][];
+    prev: number[][];
+    reconstructPath: (start: number, end: number) => number[];
+  };
+  public minDistancesMatrix: number[][] = [];
   constructor(
     private nodes: Node[] = [],
     private edges: Edge[] = []
@@ -261,7 +268,7 @@ export class TransportationGrid {
     return matriceAdjacence;
   }
 
-  shortestPath(start: number, end: number) {
+  calculatePaths() {
     let matriceAdjacence = this.getMatriceAdjacencePondere();
     matriceAdjacence.forEach(row => {
       row.forEach((value, index) => {
@@ -271,11 +278,36 @@ export class TransportationGrid {
       });
     });
 
-    let floydWarshall =
+    this.floydWarshall =
       this.FloydWarshallWithPathReconstruction(matriceAdjacence);
-    let path = floydWarshall.reconstructPath(start, end);
+
+    this.minDistancesMatrix = this.floydWarshall.dist;
+  }
+
+  getDistanceBetweenTwoBurgs(startId: number, endId: number) {
+    // console.log('distance between', startId, endId);
+    let s = this.nodes.find(n => {
+      // console.log(
+      //   'for node',
+      //   n.id,
+      //   'related to',
+      //   n.relatedBurg?.name,
+      //   n.relatedBurg
+      // );
+      return n.relatedBurg!.id == startId;
+    })!;
+    let e = this.nodes.find(n => {
+      return n.relatedBurg?.id == endId;
+    })!;
+    return this.floydWarshall.dist[s.id][e.id];
+  }
+  shortestPath(start: number, end: number) {
+    let path = this.floydWarshall.reconstructPath(start, end);
     // convert to Path object
-    let pathObj: Path = { steps: [], length: floydWarshall.dist[start][end] };
+    let pathObj: Path = {
+      steps: [],
+      length: this.floydWarshall.dist[start][end],
+    };
 
     path.forEach(id => {
       let node = this.nodes.find(node => node.id == id);
@@ -327,7 +359,6 @@ export class TransportationGrid {
         }
       }
     }
-
     // Check for negative cycles
     for (let k = 0; k < numVertices; k++) {
       for (let i = 0; i < numVertices; i++) {

@@ -1,10 +1,83 @@
-export interface World {
+import { Burg, BurgType } from './burg';
+import { WorldRaw } from './world-raw';
+
+export class World {
   info: Info;
   mapCoordinates: MapCoordinates;
   mapData: MapData;
   biomesData: BiomesData[];
-  //   notes: Note[];
-  //   nameBases: NameBase[];
+  notes: Note[];
+  nameBases: NameBase[];
+
+  constructor(raw: WorldRaw) {
+    let world: any = {};
+    world = this.convertWithProperId(raw);
+    this.info = world.info;
+    this.mapCoordinates = world.mapCoordinates;
+    this.biomesData = this.convertBiomeData(world.biomesData);
+    this.mapData = this.convertMapData(world.pack);
+    this.notes = world.notes;
+    this.nameBases = world.nameBases;
+  }
+
+  private convertWithProperId(raw: any): any {
+    let result: any = JSON.parse(JSON.stringify(raw));
+    for (let key in raw) {
+      //rename key i to id for better readability
+      if (key == 'i') {
+        result['id'] = raw.i;
+        delete result.i;
+      }
+
+      //if object, convert it if list convert all objects in list
+      if (Object.prototype.toString.call(raw[key]) == '[object Object]') {
+        result[key] = this.convertWithProperId(raw[key]);
+      }
+
+      if (Object.prototype.toString.call(raw[key]) == '[object Array]') {
+        result[key] = [];
+        for (let i = 0; i < raw[key].length; i++) {
+          result[key].push(this.convertWithProperId(raw[key][i]));
+        }
+      }
+    }
+    return result;
+  }
+
+  private convertBiomeData(raw: any): BiomesData[] {
+    let biomesData: BiomesData[] = [];
+    for (let i = 0; i < raw.i.length; i++) {
+      let id = raw.i[i];
+      let b = {
+        id: id,
+        name: raw.name[i],
+        color: raw.color[i],
+        biomesMartix: raw.biomesMartix[i],
+        habitability: raw.habitability[i],
+        iconsDensity: raw.iconsDensity[i],
+        icons: raw.icons[i],
+        cost: raw.cost[i],
+      } as BiomesData;
+      biomesData.push(b);
+    }
+    return biomesData;
+  }
+
+  private convertMapData(raw: any): MapData {
+    //remove vertices
+    delete raw.vertices;
+    //convert burgs to Burg class
+    for (let i = 0; i < raw.burgs.length; i++) {
+      if (raw.burgs[i].name == undefined) continue;
+      let burg = new Burg(raw.burgs[i]);
+      let burgCell = raw.cells[burg.cell!];
+      burg.updateBurgAttractivity(this.biomesData[burgCell.biome]);
+      raw.burgs[i] = burg;
+    }
+    //remove burgs with undefined id
+    raw.burgs = raw.burgs.filter((b: Burg) => b.id != undefined);
+    return raw as MapData;
+  }
 }
 
 export interface Info {
@@ -60,21 +133,21 @@ export interface BiomesData {
   cost: number; // biome movement cost, must be 0 or positive. Extensively used during cultures, states and religions growth phase. 0 means spread to this biome costs nothing. Max value is not defined, but 5000 is the actual max used by default
 }
 
-// export interface Note {
-//   id: string;
-//   name: string;
-//   legend: string;
-// }
+export interface Note {
+  id: string;
+  name: string;
+  legend: string;
+}
 
-// export interface NameBase {
-//   name: string;
-//   id: number;
-//   min: number;
-//   max: number;
-//   d: string;
-//   m: number;
-//   b: string;
-// }
+export interface NameBase {
+  name: string;
+  id: number;
+  min: number;
+  max: number;
+  d: string;
+  m: number;
+  b: string;
+}
 
 export interface Cell {
   id: number;
@@ -129,35 +202,6 @@ export interface FeatureClass {
   name?: string;
 }
 
-export enum BurgType {
-  Generic = 'Generic',
-  Highland = 'Highland',
-  Hunting = 'Hunting',
-  Lake = 'Lake',
-  Naval = 'Naval',
-  Nomadic = 'Nomadic',
-}
-
-export interface Burg {
-  cell?: number;
-  x: number;
-  y: number;
-  state?: number;
-  id?: number;
-  culture?: number;
-  name?: string;
-  feature?: number;
-  capital?: number;
-  port?: number;
-  population?: number;
-  type?: BurgType;
-  citadel?: number;
-  plaza?: number;
-  walls?: number;
-  shanty?: number;
-  temple?: number;
-}
-
 export enum DiplomacyEnum {
   Ally = 'Ally',
   Enemy = 'Enemy',
@@ -170,6 +214,19 @@ export enum DiplomacyEnum {
   Vassal = 'Vassal',
   X = 'x',
 }
+
+export const DIPLOMACY_ATTRACTIVITY_FACTOR = {
+  [DiplomacyEnum.Ally]: 1.5,
+  [DiplomacyEnum.Enemy]: 0,
+  [DiplomacyEnum.Friendly]: 1.25,
+  [DiplomacyEnum.Neutral]: 1,
+  [DiplomacyEnum.Rival]: 0.75,
+  [DiplomacyEnum.Suspicion]: 0.5,
+  [DiplomacyEnum.Suzerain]: 1.5,
+  [DiplomacyEnum.Unknown]: 1,
+  [DiplomacyEnum.Vassal]: 1.25,
+  [DiplomacyEnum.X]: 1,
+};
 
 export interface Campaign {
   name: string;

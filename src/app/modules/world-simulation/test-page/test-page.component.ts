@@ -33,8 +33,11 @@ export class TestPageComponent implements OnInit {
     this.worldService.loadTransportationGrids(svg);
     this.worldService.loadComplete = true;
 
-    let p = this.worldService.getPathBetweenBurgs('Viciglio', 'Monano');
-    console.log('path between ', p);
+    // let p = this.worldService.getPathBetweenBurgs('Citriceri', 'Segliana');
+    // let p = this.worldService.getPathBetweenNodes(1, 35);
+    // console.log('path between ', p);
+
+    console.log(this.worldService.getBurgsByAttractivity(99));
 
     this.drawGrid();
   }
