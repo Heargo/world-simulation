@@ -12,6 +12,7 @@ import { ModalInjectorComponent } from './components/modal-injector/modal-inject
 import { ToastComponent } from './components/toast/toast.component';
 import { BaseModalComponent } from './components/base-modal/base-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SideMenuComponent } from './components/side-menu/side-menu.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
     BaseAppComponent,
     ModalInjectorComponent,
     BaseModalComponent,
+    SideMenuComponent,
   ],
   imports: [CommonModule, HttpClientModule, RouterModule, TranslateModule],
   providers: [
@@ -37,6 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NotFoundComponent,
     NavBarComponent,
     ModalInjectorComponent,
+    SideMenuComponent,
   ],
 })
 export class CoreModule {

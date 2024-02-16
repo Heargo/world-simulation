@@ -6,13 +6,8 @@ import { NotFoundComponent } from './core/components/not-found/not-found.compone
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'game',
     pathMatch: 'full',
-  },
-  {
-    path: ROUTES.home,
-    loadChildren: () =>
-      import('./modules/home/home.module').then(m => m.HomeModule),
   },
   {
     path: ROUTES.starterKit,

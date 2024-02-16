@@ -1,0 +1,10 @@
+app-side-menu {
+  width: 20%;
+  min-width: 20%;
+}
+
+.fill-remaining {
+  flex: 1;
+  max-width: 80%;
+  overflow: scroll;
+}

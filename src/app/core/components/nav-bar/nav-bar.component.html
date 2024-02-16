@@ -1,7 +1,7 @@
 <nav class="flex-row btw middle">
   <!-- Logo -->
   <div class="flex-row middle left">
-    <a routerLink="/home" class="logo" (click)="phoneMenuOpen = false">
+    <!-- <a routerLink="/home" class="logo" (click)="phoneMenuOpen = false">
       <img src="assets/icons/logo.svg" alt="logo" />
     </a>
     <select name="lang-options" class="basic">
@@ -10,7 +10,7 @@
         (click)="changeLang(lang.code)">
         {{ lang.label }}
       </option>
-    </select>
+    </select> -->
   </div>
 
   <!-- nav items -->
@@ -25,11 +25,11 @@
     >
     <a
       (click)="phoneMenuOpen = false"
-      routerLink="/world-simulation"
+      routerLink="/game"
       routerLinkActive="active"
-      >World Sim</a
+      >Play</a
     >
-    <a
+    <!-- <a
       *ngIf="!authService.connected"
       (click)="phoneMenuOpen = false"
       routerLink="auth/login"
@@ -50,7 +50,7 @@
       routerLink="user/profile"
       routerLinkActive="active"
       >{{ 'auth.profile' | translate }}</a
-    >
+    > -->
   </div>
   <div class="menu nav-icon">
     <img

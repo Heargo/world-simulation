@@ -1,5 +1,4 @@
 import { INFRASTRUCTURES_STATS, Infrastructure } from './infrastructures';
-import { TransportationGrid } from './transportation-grid';
 import { BiomesData, DIPLOMACY_ATTRACTIVITY_FACTOR } from './world';
 import { DiplomacyEnum } from './world-raw';
 

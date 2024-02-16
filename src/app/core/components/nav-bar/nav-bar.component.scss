@@ -8,13 +8,9 @@ a {
   }
 }
 nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
   height: $nav-height;
   width: calc(100% - 2rem);
-  background-color: $background;
+  background-color: #b2f2bb; // $background;
   padding: 0 1rem;
 
   .nav-icon {

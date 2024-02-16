@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '../../core/guards/auth.guard';
-import { TestPageComponent } from './test-page/test-page.component';
+import { LoadingPageComponent } from './loading-page/loading-page.component';
+import { TransportPageComponent } from './transport-page/transport-page.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: TestPageComponent,
+    component: LoadingPageComponent,
+  },
+  {
+    path: 'transport/:type',
+    component: TransportPageComponent,
   },
 ];
 

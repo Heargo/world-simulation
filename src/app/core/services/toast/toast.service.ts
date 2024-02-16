@@ -9,6 +9,7 @@ export class ToastService {
   message: string;
   loadingMessage: string = '';
   loading: boolean = false;
+  loadingNoDelay: boolean = false;
   type: ToastLevel;
   triggerNumber: number;
   loadingScreenClass: string = '';
@@ -39,8 +40,9 @@ export class ToastService {
     }, 10);
   }
 
-  ShowLoading(message: string) {
+  ShowLoading(message: string, noDelay: boolean = false) {
     this.loadingMessage = message;
+    this.loadingNoDelay = noDelay;
     this.loading = true;
   }
 

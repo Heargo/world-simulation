@@ -1,46 +1,19 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { WorldService } from '../../../core/services/world/world.service';
-import { firstValueFrom } from 'rxjs';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Node } from '../../../core/models/world/transportation-grid';
+import { WorldService } from '../../../core/services/world/world.service';
 
 @Component({
-  selector: 'app-test-page',
-  templateUrl: './test-page.component.html',
-  styleUrls: ['./test-page.component.scss'],
+  selector: 'app-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
 })
-export class TestPageComponent implements OnInit {
+export class MapComponent {
   @ViewChild('canva') canvas!: ElementRef<HTMLCanvasElement>;
 
   constructor(
     public readonly worldService: WorldService,
     private readonly domSanitize: DomSanitizer
   ) {}
-
-  async ngOnInit(): Promise<void> {
-    await firstValueFrom(
-      this.worldService.loadWorld('assets/maps/default-map.json')
-    );
-    await firstValueFrom(
-      this.worldService.loadSvgMap('assets/maps/default-map.svg')
-    );
-  }
-
-  onSvgRendered() {
-    const container = document.getElementById('svg-map-container')!;
-    const svg = container.querySelector('svg')!;
-
-    this.worldService.loadTransportationGrids(svg);
-    this.worldService.loadComplete = true;
-
-    // let p = this.worldService.getPathBetweenBurgs('Citriceri', 'Segliana');
-    // let p = this.worldService.getPathBetweenNodes(1, 35);
-    // console.log('path between ', p);
-
-    console.log(this.worldService.getBurgsByAttractivity(99));
-
-    this.drawGrid();
-  }
 
   drawNode(
     ctx: CanvasRenderingContext2D,

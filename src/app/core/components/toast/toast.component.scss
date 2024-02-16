@@ -48,6 +48,9 @@ div {
   z-index: 1000;
   opacity: 0;
   animation: fade-in 0.5s ease 0.5s forwards;
+  &.instant {
+    animation: fade-in ease 0.5s forwards;
+  }
   pointer-events: none;
   gap: 0;
   app-loading {
