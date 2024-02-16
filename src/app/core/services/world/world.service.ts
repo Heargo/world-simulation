@@ -49,7 +49,6 @@ export class WorldService {
         if (raw) {
           this.world = this.convertRawToModel(raw);
           console.log('World loaded, ready to use');
-          console.log(this.world);
           return true;
         }
         return false;
@@ -120,7 +119,6 @@ export class WorldService {
       }
 
       if (Object.prototype.toString.call(raw[key]) == '[object Array]') {
-        // console.log("this is an list, let's convert it");
         result[key] = [];
         for (let i = 0; i < raw[key].length; i++) {
           result[key].push(this.convertWithProperId(raw[key][i]));
@@ -251,10 +249,8 @@ export class WorldService {
     for (let p of paths) {
       let start_path = p.getPointAtLength(1);
       let end_path = p.getPointAtLength(p.getTotalLength() - 1);
-      console.log('adding extremities for path', p.id);
       let s = grid.addNode(start_path.x, start_path.y);
       let e = grid.addNode(end_path.x, end_path.y);
-      console.log('start', s, 'end', e, 'for path', p.id);
     }
 
     //show nodes on paths
@@ -262,11 +258,9 @@ export class WorldService {
     for (const p of paths) {
       let isPointInPath;
       let pointsInPath: Node[] = [];
-      console.log('checking path', p.id, 'for points');
       for (const point of points) {
-        //force bigger stroke width for better precision
+        //force bigger stroke width for better precision and remove dasharray
         p.setAttribute('stroke-width', '10');
-        //no dash
         p.style.strokeDasharray = 'none';
         try {
           const pointObj = new DOMPoint(point.x, point.y);
@@ -280,29 +274,13 @@ export class WorldService {
           isPointInPath = p.isPointInStroke(pointObj);
         }
         if (isPointInPath) {
-          console.log('in stroke', p.id, ' there is', point.relatedBurg?.name);
           pointsInPath.push(point);
-        } else {
-          if (p.id == 'trail75') {
-            console.log(
-              'not in stroke',
-              p.id,
-              ' there is',
-              point.relatedBurg?.name,
-              'at',
-              point.x,
-              point.y
-            );
-          }
         }
       }
       let new_paths = this.getEdgesFromPathAndPoints(p, pointsInPath);
       grid.addEdges(new_paths);
     }
-    grid.mergeNodes(1.5);
-    console.log('grid matrice ad ', grid.getMatriceAdjacence());
-    console.log('grid matrice pond ', grid.getMatriceAdjacencePondere());
-    console.log('grid', grid);
+    grid.mergeNodes(1.5); //merge nodes that are closer than 1.5 units to each other
     return grid;
   }
 
@@ -326,7 +304,6 @@ export class WorldService {
     if (burg1_ && burg2_) {
       let b1 = this.ground_grid.getNodeClosestTo(burg1_.x, burg1_.y);
       let b2 = this.ground_grid.getNodeClosestTo(burg2_.x, burg2_.y);
-      console.log('b1', b1, 'b2', b2);
       path = this.ground_grid.shortestPath(b1.id, b2.id);
     }
     return path!;

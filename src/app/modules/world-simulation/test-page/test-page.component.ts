@@ -24,41 +24,18 @@ export class TestPageComponent implements OnInit {
     await firstValueFrom(
       this.worldService.loadSvgMap('assets/maps/default-map.svg')
     );
-    let length = this.worldService.getPathLength('trail133');
-    console.log(length);
-
-    // let tr_grid = new TransportationGrid();
-    // tr_grid.addNode(0, 0);
-    // tr_grid.addNode(1, 0);
-    // tr_grid.addNode(2, 0);
-    // tr_grid.addNode(3, 0);
-
-    // tr_grid.addEdge(0, 1, 5);
-    // tr_grid.addEdge(0, 2, 8);
-    // tr_grid.addEdge(1, 2, 9);
-    // tr_grid.addEdge(2, 3, 6);
-    // tr_grid.addEdge(1, 3, 2);
-    // let path = tr_grid.shortestPath(0, 3);
-    // console.log(path);
   }
 
   onSvgRendered() {
-    console.log('svg rendered');
     const container = document.getElementById('svg-map-container')!;
-
     const svg = container.querySelector('svg')!;
-    console.log('svg', svg);
 
     this.worldService.loadTransportationGrids(svg);
     this.worldService.loadComplete = true;
-    let p = this.worldService.getPathBetweenBurgs('Viciglio', 'Monano'); //!FIX THIS Viciglio->Monzanello ok but Viciglio->Monano not ok
-    let debugPath = this.worldService.getPathBetweenNodes(15, 162);
-    console.log('debugPath', debugPath);
+
+    let p = this.worldService.getPathBetweenBurgs('Viciglio', 'Monano');
     console.log('path between ', p);
-    console.log(
-      'unconnected nodes: ',
-      this.worldService.ground_grid.getUnconnectBurg()
-    );
+
     this.drawGrid();
   }
 
