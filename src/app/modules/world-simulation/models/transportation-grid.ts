@@ -15,6 +15,7 @@ export interface Edge {
 
 export interface Path {
   steps: (Burg | number)[];
+  stepsCumulativeLength: number[];
   length: number;
 }
 
@@ -306,6 +307,7 @@ export class TransportationGrid {
     // convert to Path object
     let pathObj: Path = {
       steps: [],
+      stepsCumulativeLength: [],
       length: this.floydWarshall.dist[start][end],
     };
 
@@ -316,6 +318,7 @@ export class TransportationGrid {
       } else {
         pathObj.steps.push(id);
       }
+      pathObj.stepsCumulativeLength?.push(this.floydWarshall.dist[start][id]);
     });
 
     return pathObj;

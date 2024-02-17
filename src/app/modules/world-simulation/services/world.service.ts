@@ -213,11 +213,14 @@ export class WorldService {
     return path!;
   }
 
-  getBurgsByAttractivity(burgId: number): Burg[] {
+  getBurgsByAttractivity(burgId: number): {
+    burgs: Burg[];
+    attractivity: number[];
+  } {
     let burg = this.world.mapData.burgs.find(b => b.id === burgId)!;
     let state = burg.state;
     let otherBurgs = [...this.world.mapData.burgs.filter(b => b.id !== burgId)];
-
+    let relativeAttractivity: number[] = [];
     //order by attractivity
     otherBurgs.sort((a, b) => {
       let diplomacyA = this.world.mapData.states[state!].diplomacy[a.state!];
@@ -245,6 +248,22 @@ export class WorldService {
       );
     });
 
-    return otherBurgs;
+    for (let otherBurg of otherBurgs) {
+      let diplomacy =
+        this.world.mapData.states[state!].diplomacy[otherBurg.state!];
+      let distance = this.ground_grid.getDistanceBetweenTwoBurgs(
+        burgId,
+        otherBurg.id!
+      );
+      relativeAttractivity.push(
+        burg.getRelativeAttractivity(
+          diplomacy as DiplomacyEnum,
+          distance,
+          state === otherBurg.state
+        )
+      );
+    }
+
+    return { burgs: otherBurgs, attractivity: relativeAttractivity };
   }
 }

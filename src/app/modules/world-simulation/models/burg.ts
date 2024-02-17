@@ -16,9 +16,9 @@ export class Burg {
   x: number;
   y: number;
   state?: number;
-  id?: number;
+  id: number;
   culture?: number;
-  name?: string;
+  name: string;
   feature?: number;
   capital?: number;
   population?: number;

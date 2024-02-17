@@ -3,7 +3,7 @@ export interface Resource {
   icon: string;
   type: ResourceType;
   value: number;
-  spaceUsed?: number;
+  spaceUsed: number;
 }
 
 export enum ResourceType {
@@ -28,6 +28,7 @@ const EFFECTS: { [key: string]: Resource } = {
     icon: 'military',
     type: ResourceType.Effect,
     value: 1,
+    spaceUsed: 0,
   },
 };
 

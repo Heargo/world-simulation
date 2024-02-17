@@ -3,6 +3,7 @@ import { WorldService } from '../../services/world.service';
 import { firstValueFrom } from 'rxjs';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Router } from '@angular/router';
+import { TransportService } from '../../services/transports.service';
 
 @Component({
   selector: 'app-loading-page',
@@ -12,6 +13,7 @@ import { Router } from '@angular/router';
 export class LoadingPageComponent implements OnInit {
   constructor(
     public readonly worldService: WorldService,
+    private readonly transportService: TransportService,
     private readonly toasts: ToastService,
     private readonly router: Router
   ) {}
@@ -26,11 +28,12 @@ export class LoadingPageComponent implements OnInit {
     );
   }
 
-  onSvgRendered() {
+  async onSvgRendered() {
     const container = document.getElementById('svg-map-container')!;
     const svg = container.querySelector('svg')!;
 
     this.worldService.loadTransportationGrids(svg);
+    this.transportService.initCarriages();
     this.worldService.loadComplete = true;
     this.toasts.HideLoading();
 
