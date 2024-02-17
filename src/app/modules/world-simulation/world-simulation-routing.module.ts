@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoadingPageComponent } from './loading-page/loading-page.component';
-import { TransportPageComponent } from './transport-page/transport-page.component';
+import { LoadingPageComponent } from './pages/loading-page/loading-page.component';
+import { TransportPageComponent } from './pages/transport-page/transport-page.component';
 
 const routes: Routes = [
   {

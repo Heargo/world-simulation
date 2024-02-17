@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { WorldService } from '../services/world.service';
+import { WorldService } from '../../services/world.service';
 import { firstValueFrom } from 'rxjs';
-import { ToastService } from '../../../core/services/toast/toast.service';
+import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Router } from '@angular/router';
 
 @Component({

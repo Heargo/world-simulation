@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { WorldService } from '../services/world.service';
-import { BaseAppComponent } from '../../../core/components/base-app/base-app.component';
+import { WorldService } from '../../services/world.service';
+import { BaseAppComponent } from '../../../../core/components/base-app/base-app.component';
 
 @Component({
   selector: 'app-map',
