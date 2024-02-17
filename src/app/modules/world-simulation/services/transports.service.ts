@@ -7,23 +7,27 @@ import { Burg } from '../models/burg';
   providedIn: 'root',
 })
 export class TransportService {
-  carriages: Vehicle[] = [];
+  nbCarriages: number = 0;
+  nbShips: number = 0;
+  allCarriages: Vehicle[] = [];
+  carriages: { [key: number]: Vehicle[] } = [];
   ships: Vehicle[] = [];
   constructor(private readonly worldService: WorldService) {}
 
   getName(burg: Burg): string {
     let stateName = this.worldService.world.mapData.states[burg.state!].name;
     return `${stateName.slice(0, 2)}${burg.name.slice(0, 3)}-${
-      this.carriages.length + 1
+      this.nbCarriages + 1
     }`;
   }
 
-  initCarriages(): void {
+  initCarriages(maxPerCity: number = 20): void {
     let burgs = this.worldService.world.mapData.burgs;
 
     burgs.forEach(burg => {
       let others = this.worldService.getBurgsByAttractivity(burg.id);
-      for (let i = 0; i < others.burgs.length; i++) {
+      this.carriages[burg.id] = [];
+      for (let i = 0; i < Math.min(maxPerCity, others.burgs.length); i++) {
         //if the attractivity is 0, we don't create a carriage
         if (others.attractivity[i] === 0) continue;
 
@@ -45,8 +49,33 @@ export class TransportService {
           costPerKm,
           path
         );
-        this.carriages.push(carriage);
+        this.allCarriages.push(carriage);
+        this.nbCarriages++;
       }
     });
+
+    burgs.forEach(burg => {
+      this.carriages[burg.id] = this.allCarriages.filter(c => {
+        return c.goThroughtBurg(burg);
+      });
+    });
+  }
+
+  getCarriagesByBurg(burg: Burg, limit: number = 20): Vehicle[] {
+    console.log(
+      'there is ',
+      this.carriages[burg.id].length,
+      ' carriages going through ',
+      burg.name,
+      this.carriages[burg.id]
+    );
+    //filter and sort by near departure
+    return this.carriages[burg.id]
+      .sort((a, b) => {
+        return (
+          a.getTimeUntilDepartureFrom(burg) - b.getTimeUntilDepartureFrom(burg)
+        );
+      })
+      .slice(0, limit);
   }
 }

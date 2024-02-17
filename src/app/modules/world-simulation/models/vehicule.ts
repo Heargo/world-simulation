@@ -55,11 +55,43 @@ export class Vehicle {
     return remainingPath * this.costPerDistanceUnit;
   }
 
-  getDurationInSecondes(depart: Burg | null = null): number {
-    if (depart === null) {
-      depart = this.travelPath.steps[0] as Burg;
+  goThroughtBurg(b: Burg): boolean {
+    return (
+      this.travelPath.steps.find(s => {
+        if (s instanceof Burg) {
+          return s.id === b.id;
+        } else return false;
+      }) !== undefined
+    );
+  }
+
+  getTimeUntilDepartureFrom(burg: Burg): number {
+    if (!this.goThroughtBurg(burg)) return -1;
+    let timeToBurg = this.getTimeToGetToBurg(burg);
+    let now = new Date().getTime();
+    if (this.isInBurg(burg)) {
+      return (
+        this.stopDuration * 1000 -
+        (now - this.getLastDeparture().getTime() - timeToBurg * 1000)
+      );
+    } else {
+      let timeToBurg = this.getTimeToGetToBurg(burg);
+      console.log(
+        'no longer in burg',
+        this.name,
+        burg.name,
+        'time to get back here',
+        timeToBurg
+      );
+      return timeToBurg + this.stopDuration * 1000;
     }
-    let timeToGetToBurg = this.getTimeToGetToBurg(depart);
+  }
+
+  getDurationInSecondes(depart: Burg | null = null): number {
+    let timeToGetToBurg = 0;
+    if (depart !== null) {
+      timeToGetToBurg = this.getTimeToGetToBurg(depart);
+    }
 
     //number of stops are the number of burgs
     let numberOfStops = this.travelPath.steps.filter(
@@ -97,11 +129,11 @@ export class Vehicle {
     return new Date(currentCycleStart);
   }
 
-  getReturnDate(): Date {
+  getReturnDate(burg: Burg): Date {
     let lastDeparture = this.getLastDeparture();
-    let returnDate =
-      lastDeparture.getTime() + this.getDurationInSecondes() * 1000;
-    return new Date(returnDate);
+    let timeToBurg = this.getTimeToGetToBurg(burg);
+    //TODO
+    return new Date();
   }
 
   getTimeSinceLastDepartureInSecondes(): number {
@@ -123,7 +155,13 @@ export class Vehicle {
       this.travelPath.stepsCumulativeLength[burgIndex] / this.speed;
 
     if (this.isReturning()) {
-      timeToGetToBurg = this.getDurationInSecondes() - timeToGetToBurg;
+      let numberOfStops = this.travelPath.steps.filter(
+        s => s instanceof Burg
+      ).length;
+
+      let totalTime =
+        this.travelPath.length / this.speed + this.stopDuration * numberOfStops;
+      timeToGetToBurg = totalTime - timeToGetToBurg;
     }
 
     return timeToGetToBurg;

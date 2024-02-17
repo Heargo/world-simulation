@@ -1,5 +1,9 @@
 <div class="flex-row main-container">
-  <div class="vehicules flex-col">list of vehicules</div>
+  <div class="vehicules flex-col">
+    <app-vehicule-card
+      *ngFor="let v of vehiculesInBurg$ | async"
+      [vehicule]="v"></app-vehicule-card>
+  </div>
   <div class="details flex-col">
     <app-vehicule-card-detailed></app-vehicule-card-detailed>
     <app-transport-options class="options"></app-transport-options>

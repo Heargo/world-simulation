@@ -26,6 +26,8 @@ export class WorldService {
 
   loadComplete = false;
 
+  currentBurg!: Burg;
+
   constructor(
     private readonly http: HttpClient,
     private readonly domSanitize: DomSanitizer

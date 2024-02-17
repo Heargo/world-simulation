@@ -1,1 +1,7 @@
-<p>vehicule-card works!</p>
+<div class="flex-col">
+  <p>
+    {{ vehicule.name }} leaving in
+    {{ vehicule | vehiculeTimeLeft | async }}
+  </p>
+  <p>Destination {{ vehicule | vehiculeDestination }}</p>
+</div>
