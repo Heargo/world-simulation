@@ -1,19 +1,28 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { WorldService } from '../../../core/services/world/world.service';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { WorldService } from '../services/world.service';
+import { BaseAppComponent } from '../../../core/components/base-app/base-app.component';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-export class MapComponent {
+export class MapComponent extends BaseAppComponent implements AfterViewInit {
   @ViewChild('canva') canvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('container') container!: ElementRef<HTMLElement>;
 
-  constructor(
-    public readonly worldService: WorldService,
-    private readonly domSanitize: DomSanitizer
-  ) {}
+  constructor(public readonly worldService: WorldService) {
+    super();
+  }
+
+  ngAfterViewInit(): void {
+    //set canvas size to fit container
+    this.canvas.nativeElement.width = this.container.nativeElement.clientWidth;
+    this.canvas.nativeElement.height =
+      this.container.nativeElement.clientHeight;
+    //get canva HTML element ref
+    this.drawGrid();
+  }
 
   drawNode(
     ctx: CanvasRenderingContext2D,

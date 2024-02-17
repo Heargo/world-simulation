@@ -20,5 +20,9 @@
     "layoutClasses": "Custom layout classes",
     "authentication": "Authentication",
     "languages": "Languages"
+  },
+  "help": {
+    "title": "Welcome",
+    "content": "Welcome to Azggard alive."
   }
 }

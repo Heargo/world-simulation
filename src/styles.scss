@@ -19,7 +19,6 @@ body {
 }
 
 .main-container {
-  margin-top: $nav-height;
-  min-height: calc(100vh - $nav-height - 2rem);
+  height: calc(100vh - $nav-height - 2rem);
   padding: 1rem;
 }

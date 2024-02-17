@@ -6,6 +6,9 @@ import { SharedModule } from '../../shared/shared.module';
 import { MapComponent } from './map/map.component';
 import { BurgCardComponent } from './burg-card/burg-card.component';
 import { TransportPageComponent } from './transport-page/transport-page.component';
+import { TransportOptionsComponent } from './transport-options/transport-options.component';
+import { VehiculeCardComponent } from './vehicule-card/vehicule-card.component';
+import { VehiculeCardDetailedComponent } from './vehicule-card-detailed/vehicule-card-detailed.component';
 
 @NgModule({
   declarations: [
@@ -13,6 +16,9 @@ import { TransportPageComponent } from './transport-page/transport-page.componen
     MapComponent,
     BurgCardComponent,
     TransportPageComponent,
+    TransportOptionsComponent,
+    VehiculeCardComponent,
+    VehiculeCardDetailedComponent,
   ],
   imports: [CommonModule, WorldSimulationRoutingModule, SharedModule],
 })

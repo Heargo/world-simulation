@@ -20,5 +20,9 @@
     "layoutClasses": "Classe de structures",
     "authentication": "Authentification",
     "languages": "Langues"
+  },
+  "help": {
+    "title": "Bienvenue",
+    "content": "Bienvenue sur Azggard alive !"
   }
 }

@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, take } from 'rxjs';
-import { BiomesData, MapData, World } from '../../models/world/world';
-import { DiplomacyEnum, WorldRaw } from '../../models/world/world-raw';
+import { BiomesData, MapData, World } from '../models/world';
+import { DiplomacyEnum, WorldRaw } from '../models/world-raw';
 import {
   Edge,
   Node,
   Path,
   TransportationGrid,
-} from '../../models/world/transportation-grid';
+} from '../models/transportation-grid';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Burg } from '../../models/world/burg';
+import { Burg } from '../models/burg';
 
 @Injectable({
   providedIn: 'root',

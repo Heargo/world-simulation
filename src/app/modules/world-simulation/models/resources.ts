@@ -3,6 +3,7 @@ export interface Resource {
   icon: string;
   type: ResourceType;
   value: number;
+  spaceUsed?: number;
 }
 
 export enum ResourceType {
@@ -36,17 +37,20 @@ const RESOURCES: { [key: string]: Resource } = {
     icon: 'gold',
     type: ResourceType.Currency,
     value: 10000,
+    spaceUsed: 0,
   },
   silver: {
     name: 'Silver',
     icon: 'silver',
     type: ResourceType.Currency,
     value: 100,
+    spaceUsed: 0,
   },
   copper: {
     name: 'Copper',
     icon: 'copper',
     type: ResourceType.Currency,
     value: 1,
+    spaceUsed: 0,
   },
 };

@@ -1,9 +1,9 @@
 <div class="main-container">
-  <p>ok</p>
   <div
     *ngIf="!worldService.loadComplete"
     appMutationObserverDirective
     (innerHtmlRendered)="onSvgRendered()"
     id="svg-map-container"
     [innerHTML]="worldService.svgMapDisplay"></div>
+  <p>{{ 'help.title' | translate }}</p>
 </div>

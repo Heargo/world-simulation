@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { WorldService } from '../../../core/services/world/world.service';
+import { WorldService } from '../services/world.service';
 import { firstValueFrom } from 'rxjs';
 import { ToastService } from '../../../core/services/toast/toast.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-loading-page',
@@ -11,7 +12,8 @@ import { ToastService } from '../../../core/services/toast/toast.service';
 export class LoadingPageComponent implements OnInit {
   constructor(
     public readonly worldService: WorldService,
-    private readonly toasts: ToastService
+    private readonly toasts: ToastService,
+    private readonly router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -32,6 +34,9 @@ export class LoadingPageComponent implements OnInit {
     this.worldService.loadComplete = true;
     this.toasts.HideLoading();
 
-    console.log(this.worldService.getBurgsByAttractivity(99));
+    //redirect to the transport page
+    this.router.navigate(['game/transport/road']);
+
+    // console.log(this.worldService.getBurgsByAttractivity(99));
   }
 }
