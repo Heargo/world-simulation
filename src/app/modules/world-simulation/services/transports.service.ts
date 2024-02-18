@@ -62,20 +62,17 @@ export class TransportService {
   }
 
   getCarriagesByBurg(burg: Burg, limit: number = 20): Vehicle[] {
-    console.log(
-      'there is ',
-      this.carriages[burg.id].length,
-      ' carriages going through ',
-      burg.name,
-      this.carriages[burg.id]
-    );
     //filter and sort by near departure
-    return this.carriages[burg.id]
-      .sort((a, b) => {
-        return (
-          a.getTimeUntilDepartureFrom(burg) - b.getTimeUntilDepartureFrom(burg)
-        );
-      })
-      .slice(0, limit);
+    return (
+      this.carriages[burg.id]
+        .sort((a, b) => {
+          return (
+            a.getTimeUntilDepartureFrom(burg) -
+            b.getTimeUntilDepartureFrom(burg)
+          );
+        })
+        //   .filter(c => c.isInBurg(burg))
+        .slice(0, limit)
+    );
   }
 }

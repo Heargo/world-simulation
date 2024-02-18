@@ -1,7 +1,7 @@
 <div class="flex-col">
   <p>
-    {{ vehicule.name }} leaving in
-    {{ vehicule | vehiculeTimeLeft | async }}
+    {{ vehicule.name }} leaving in {{ vehicule | vehiculeTimeLeft | async }}s in
+    direction of
+    {{ vehicule | vehiculeDestination }}
   </p>
-  <p>Destination {{ vehicule | vehiculeDestination }}</p>
 </div>

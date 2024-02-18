@@ -34,7 +34,7 @@ export class LoadingPageComponent implements OnInit {
 
     this.worldService.loadTransportationGrids(svg);
     this.transportService.initCarriages(5);
-    this.worldService.currentBurg = this.worldService.world.mapData.burgs[0];
+    this.worldService.currentBurg = this.worldService.world.mapData.burgs[294];
     this.worldService.loadComplete = true;
     this.toasts.HideLoading();
 

@@ -20,19 +20,15 @@ export class TransportPageComponent extends BaseAppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.vehiculesInBurg$ = new Observable<Vehicle[]>(observer => {
-    //   let interval = setInterval(() => {
-    //     observer.next(
-    //       this.transportService.getCarriagesByBurg(
-    //         this.worldService.currentBurg
-    //       )
-    //     );
-    //   }, 2 * 1000);
-    //   return () => {
-    //     clearInterval(interval);
-    //   };
-    // });
-    this.vehiculesInBurg$ = timer(0, 2 * 1000).pipe(
+    let burg = this.worldService.currentBurg;
+    console.log(
+      'there is ',
+      this.transportService.carriages[burg.id].length,
+      ' carriages going through ',
+      burg.name,
+      this.transportService.carriages[burg.id]
+    );
+    this.vehiculesInBurg$ = timer(0, 1 * 1000).pipe(
       map(() =>
         this.transportService.getCarriagesByBurg(this.worldService.currentBurg)
       )
