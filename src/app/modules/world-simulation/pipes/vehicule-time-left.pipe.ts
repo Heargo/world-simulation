@@ -13,9 +13,8 @@ export class vehiculeTimeLeft implements PipeTransform {
     // return time left every second
     return new Observable<number>(observer => {
       let interval = setInterval(() => {
-        let timeLeft = Math.round(
-          value.getTimeUntilDepartureFrom(this.worldService.currentBurg) / 1000
-        );
+        let timeLeft =
+          value.getTimeUntilDeparture(this.worldService.currentBurg) / 1000;
         observer.next(timeLeft);
         if (timeLeft === 0) {
           observer.complete();

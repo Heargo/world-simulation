@@ -59,6 +59,7 @@ export class TransportService {
         return c.goThroughtBurg(burg);
       });
     });
+    // console.log('leaving from heratl: ', this.carriages[27]);
   }
 
   getCarriagesByBurg(burg: Burg, limit: number = 20): Vehicle[] {
@@ -66,10 +67,7 @@ export class TransportService {
     return (
       this.carriages[burg.id]
         .sort((a, b) => {
-          return (
-            a.getTimeUntilDepartureFrom(burg) -
-            b.getTimeUntilDepartureFrom(burg)
-          );
+          return a.getTimeUntilDeparture(burg) - b.getTimeUntilDeparture(burg);
         })
         //   .filter(c => c.isInBurg(burg))
         .slice(0, limit)
