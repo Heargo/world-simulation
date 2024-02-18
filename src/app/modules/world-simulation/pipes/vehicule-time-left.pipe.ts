@@ -9,17 +9,19 @@ import { Observable } from 'rxjs';
 export class vehiculeTimeLeft implements PipeTransform {
   constructor(private readonly worldService: WorldService) {}
 
-  transform(value: Vehicle): Observable<number> {
+  transform(value: Vehicle): Observable<string> {
     // return time left every second
-    return new Observable<number>(observer => {
-      let interval = setInterval(() => {
+    return new Observable<string>(observer => {
+      setInterval(() => {
         let timeLeft =
           value.getTimeUntilDeparture(this.worldService.currentBurg) / 1000;
-        observer.next(timeLeft);
-        if (timeLeft === 0) {
-          observer.complete();
-          clearInterval(interval);
+        let formated = '';
+        if (timeLeft > 60) {
+          formated = `${Math.floor(timeLeft / 60)} min`;
+        } else {
+          formated = `${Math.floor(timeLeft)} seconds`;
         }
+        observer.next(formated);
       }, 1000);
     });
   }

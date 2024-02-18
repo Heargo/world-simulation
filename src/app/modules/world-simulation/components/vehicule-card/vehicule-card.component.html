@@ -1,7 +1,13 @@
-<div class="flex-col">
-  <p>
-    {{ vehicule.name }} leaving in {{ vehicule | vehiculeTimeLeft | async }}s in
-    direction of
-    {{ vehicule | vehiculeDestination }}
-  </p>
+<div
+  class="card flex-col"
+  [ngClass]="{ available: vehicule | vehiculeAvailable | async }">
+  <div class="flex-row left bottom">
+    <p class="dest">
+      {{ vehicule | vehiculeDestination }}
+    </p>
+    <p class="name">
+      {{ vehicule.name }}
+    </p>
+  </div>
+  <p>leaving in {{ vehicule | vehiculeTimeLeft | async }}</p>
 </div>

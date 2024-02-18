@@ -44,7 +44,7 @@ export class TransportService {
         let carriage = new Vehicle(
           VehicleType.Carriage,
           this.getName(burg),
-          1,
+          0.2,
           100,
           costPerKm,
           path
@@ -62,15 +62,20 @@ export class TransportService {
     // console.log('leaving from heratl: ', this.carriages[27]);
   }
 
-  getCarriagesByBurg(burg: Burg, limit: number = 20): Vehicle[] {
+  getCarriagesByBurg(burg: Burg): Vehicle[] {
     //filter and sort by near departure
     return (
       this.carriages[burg.id]
+        // .sort((a, b) => {
+        //   let aVal = a.isInBurg(burg) ? 0 : 1;
+        //   let bVal = b.isInBurg(burg) ? 0 : 1;
+        //   return aVal - bVal;
+        // })
         .sort((a, b) => {
-          return a.getTimeUntilDeparture(burg) - b.getTimeUntilDeparture(burg);
+          let aVal = a.getTimeUntilDeparture(burg);
+          let bVal = b.getTimeUntilDeparture(burg);
+          return aVal - bVal;
         })
-        //   .filter(c => c.isInBurg(burg))
-        .slice(0, limit)
     );
   }
 }

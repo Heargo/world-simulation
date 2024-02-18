@@ -11,6 +11,7 @@ import { VehiculeCardComponent } from './components/vehicule-card/vehicule-card.
 import { VehiculeCardDetailedComponent } from './components/vehicule-card-detailed/vehicule-card-detailed.component';
 import { VehiculeDestination } from './pipes/vehicule-destination.pipe';
 import { vehiculeTimeLeft } from './pipes/vehicule-time-left.pipe';
+import { VehiculeAvailable } from './pipes/vehicule-in-burg.pipe';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { vehiculeTimeLeft } from './pipes/vehicule-time-left.pipe';
     VehiculeCardDetailedComponent,
     VehiculeDestination,
     vehiculeTimeLeft,
+    VehiculeAvailable,
   ],
   imports: [CommonModule, WorldSimulationRoutingModule, SharedModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
