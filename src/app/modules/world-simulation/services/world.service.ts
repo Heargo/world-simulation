@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { World } from '../models/world';
+import { BiomesData, State, World } from '../models/world';
 import { DiplomacyEnum } from '../models/world-raw';
 import { Path, TransportationGrid } from '../models/transportation-grid';
 import { Burg } from '../models/burg';
@@ -33,6 +33,14 @@ export class WorldService {
 
   getBurgById(id: number): Burg | undefined {
     return this.world.mapData.burgs.find(b => b.id === id);
+  }
+
+  getBurgBiome(burg: Burg): BiomesData {
+    return this.world.biomesData[this.world.mapData.cells[burg.cell!].biome];
+  }
+
+  getBurgState(burg: Burg): State {
+    return this.world.mapData.states[burg.state!];
   }
 
   getPathBetweenBurgs(burgName1: string, burgName2: string): Path | undefined {

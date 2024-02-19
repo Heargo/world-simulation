@@ -12,20 +12,22 @@ export enum BurgType {
 }
 
 export class Burg {
+  //Foreign keys
+  id: number;
   cell?: number;
+  state?: number;
+  culture?: number;
+  feature?: number;
+  //Data
+  name: string;
+  capital: boolean;
   x: number;
   y: number;
-  state?: number;
-  id: number;
-  culture?: number;
-  name: string;
-  feature?: number;
-  capital?: number;
-  population?: number;
-  type?: BurgType;
-  startingInfrastructure?: Infrastructure[];
-  buildedInfrastructure?: Infrastructure[];
-  cityAttractivity?: number;
+  population: number;
+  cityAttractivity: number;
+  type: BurgType;
+  startingInfrastructure: Infrastructure[];
+  buildedInfrastructure: Infrastructure[];
 
   constructor(data: any) {
     this.cell = data.cell;
@@ -36,11 +38,12 @@ export class Burg {
     this.culture = data.culture;
     this.name = data.name;
     this.feature = data.feature;
-    this.capital = data.capital;
+    this.capital = data.capital === 1 ? true : false;
     this.population = data.population * 1000;
     this.type = data.type;
     this.startingInfrastructure = this.generateStartingInfrastructure(data);
     this.buildedInfrastructure = [];
+    this.cityAttractivity = 0;
   }
 
   generateStartingInfrastructure(data: any) {
