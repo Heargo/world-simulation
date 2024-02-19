@@ -35,7 +35,7 @@ export class Vehicle {
     capacity: number,
     costPerKm: number,
     travelPath: Path,
-    stopDuration: number = 200
+    stopDuration: number = 300
   ) {
     this.id = Vehicle.VEHICLE_ID++;
     this.type = type;
@@ -55,7 +55,7 @@ export class Vehicle {
 
     this.cycle =
       (2 * (this.travelPath.length / this.speed) +
-        (2 * this.nbBurgsInPath - 1) * this.stopDuration) *
+        (2 * this.nbBurgsInPath - 2) * this.stopDuration) *
       1000;
   }
 

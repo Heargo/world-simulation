@@ -1,6 +1,6 @@
 import { Burg } from './burg';
 
-export interface Node {
+export interface GridNode {
   id: number;
   x: number;
   y: number;
@@ -30,7 +30,7 @@ export class TransportationGrid {
   };
   public minDistancesMatrix: number[][] = [];
   constructor(
-    private nodes: Node[] = [],
+    private nodes: GridNode[] = [],
     private edges: Edge[] = []
   ) {
     this.edges = edges;
@@ -82,7 +82,7 @@ export class TransportationGrid {
     return this.edges.filter(edge => edge.nodes.includes(nodeId));
   }
 
-  sortByClosestNode(node: Node, nodes: Node[]) {
+  sortByClosestNode(node: GridNode, nodes: GridNode[]) {
     nodes.sort((a, b) => {
       let distA = Math.sqrt(
         Math.pow(a.x - node.x, 2) + Math.pow(a.y - node.y, 2)
@@ -95,7 +95,7 @@ export class TransportationGrid {
     return nodes;
   }
 
-  orderByDistanceToNode(node: Node, nodes: Node[], precision: number) {
+  orderByDistanceToNode(node: GridNode, nodes: GridNode[], precision: number) {
     return nodes.filter((n, index) => {
       if (n.id != node.id) {
         let dist = Math.sqrt(
@@ -122,7 +122,7 @@ export class TransportationGrid {
       closeNodes = this.sortByClosestNode(node, closeNodes);
 
       if (closeNodes.length > 0) {
-        let closestNode: Node | null = null;
+        let closestNode: GridNode | null = null;
 
         //find the closest node that has not already been merged
         for (let j = 0; j < closeNodes.length; j++) {
@@ -134,8 +134,8 @@ export class TransportationGrid {
         //merge the nodes
         if (closestNode) {
           //the node with a burg is the one that will be kept, the other will be removed
-          let nodeToReplace: Node;
-          let nodeToKeep: Node;
+          let nodeToReplace: GridNode;
+          let nodeToKeep: GridNode;
           if (node.relatedBurg) {
             nodeToReplace = closestNode;
             nodeToKeep = node;
@@ -184,8 +184,8 @@ export class TransportationGrid {
     });
   }
 
-  getUnconnectNode(): Node[] {
-    let unconnected: Node[] = [];
+  getUnconnectNode(): GridNode[] {
+    let unconnected: GridNode[] = [];
     this.nodes.forEach(node => {
       let connected = this.edges.some(edge => edge.nodes.includes(node.id));
       if (!connected) {
@@ -195,14 +195,14 @@ export class TransportationGrid {
     return unconnected;
   }
 
-  getUnconnectBurg(): Node[] {
+  getUnconnectBurg(): GridNode[] {
     let unconnected = this.getUnconnectNode();
     let unconnectedBurg = unconnected.filter(node => node.relatedBurg);
     return unconnectedBurg;
   }
 
-  getConnectedNodes(): Node[] {
-    let connected: Node[] = [];
+  getConnectedNodes(): GridNode[] {
+    let connected: GridNode[] = [];
     this.nodes.forEach(node => {
       let isConnected = this.edges.some(edge => edge.nodes.includes(node.id));
       if (isConnected) {
@@ -212,9 +212,9 @@ export class TransportationGrid {
     return connected;
   }
 
-  getNodeClosestTo(x: number, y: number): Node {
+  getNodeClosestTo(x: number, y: number): GridNode {
     // find the node closest to the given coordinates
-    let closest: Node | null = null;
+    let closest: GridNode | null = null;
     let minDistance = Infinity;
     this.nodes.forEach(node => {
       let distance = Math.sqrt(

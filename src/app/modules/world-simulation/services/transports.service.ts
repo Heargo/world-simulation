@@ -11,7 +11,7 @@ export class TransportService {
   nbShips: number = 0;
   allCarriages: Vehicle[] = [];
   carriages: { [key: number]: Vehicle[] } = [];
-  ships: Vehicle[] = [];
+  ships: { [key: number]: Vehicle[] } = [];
   constructor(private readonly worldService: WorldService) {}
 
   getName(burg: Burg): string {
@@ -23,7 +23,7 @@ export class TransportService {
 
   initCarriages(maxPerCity: number = 20): void {
     let burgs = this.worldService.world.mapData.burgs;
-
+    let allCarriages: Vehicle[] = [];
     burgs.forEach(burg => {
       let others = this.worldService.getBurgsByAttractivity(burg.id);
       this.carriages[burg.id] = [];
@@ -47,35 +47,25 @@ export class TransportService {
           0.2,
           100,
           costPerKm,
-          path
+          path!
         );
-        this.allCarriages.push(carriage);
+        allCarriages.push(carriage);
         this.nbCarriages++;
       }
     });
 
     burgs.forEach(burg => {
-      this.carriages[burg.id] = this.allCarriages.filter(c => {
+      this.carriages[burg.id] = allCarriages.filter(c => {
         return c.goThroughtBurg(burg);
       });
     });
-    // console.log('leaving from heratl: ', this.carriages[27]);
   }
 
   getCarriagesByBurg(burg: Burg): Vehicle[] {
-    //filter and sort by near departure
-    return (
-      this.carriages[burg.id]
-        // .sort((a, b) => {
-        //   let aVal = a.isInBurg(burg) ? 0 : 1;
-        //   let bVal = b.isInBurg(burg) ? 0 : 1;
-        //   return aVal - bVal;
-        // })
-        .sort((a, b) => {
-          let aVal = a.getTimeUntilDeparture(burg);
-          let bVal = b.getTimeUntilDeparture(burg);
-          return aVal - bVal;
-        })
-    );
+    return this.carriages[burg.id].sort((a, b) => {
+      let aVal = a.getTimeUntilDeparture(burg);
+      let bVal = b.getTimeUntilDeparture(burg);
+      return aVal - bVal;
+    });
   }
 }

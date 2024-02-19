@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Router } from '@angular/router';
 import { TransportService } from '../../services/transports.service';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-loading-page',
@@ -12,8 +13,7 @@ import { TransportService } from '../../services/transports.service';
 })
 export class LoadingPageComponent implements OnInit {
   constructor(
-    public readonly worldService: WorldService,
-    private readonly transportService: TransportService,
+    public readonly loadingService: LoadingService,
     private readonly toasts: ToastService,
     private readonly router: Router
   ) {}
@@ -21,10 +21,10 @@ export class LoadingPageComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.toasts.ShowLoading('Loading world', true);
     await firstValueFrom(
-      this.worldService.loadWorld('assets/maps/default-map.json')
+      this.loadingService.loadWorld('assets/maps/default-map.json')
     );
     await firstValueFrom(
-      this.worldService.loadSvgMap('assets/maps/default-map.svg')
+      this.loadingService.loadSvgMap('assets/maps/default-map.svg')
     );
   }
 
@@ -32,10 +32,8 @@ export class LoadingPageComponent implements OnInit {
     const container = document.getElementById('svg-map-container')!;
     const svg = container.querySelector('svg')!;
 
-    this.worldService.loadTransportationGrids(svg);
-    this.transportService.initCarriages(5);
-    this.worldService.currentBurg = this.worldService.world.mapData.burgs[294];
-    this.worldService.loadComplete = true;
+    this.loadingService.loadTransportationGrids(svg);
+    this.loadingService.loadCompleted();
     this.toasts.HideLoading();
 
     //redirect to the transport page
