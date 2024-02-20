@@ -52,7 +52,6 @@ export class World {
         id: id,
         name: raw.name[i],
         color: raw.color[i],
-        biomesMartix: raw.biomesMartix[i],
         habitability: raw.habitability[i],
         iconsDensity: raw.iconsDensity[i],
         icons: raw.icons[i],
@@ -126,7 +125,6 @@ export interface BiomesData {
   id: number;
   name: string;
   color: string;
-  biomesMartix: { [key: string]: number }[]; // 2d matrix used to define cell biome by temperature and moisture. Columns contain temperature data going from > 19 °C to < -4 °C. Rows contain data for 5 moisture bands from the drier to the wettest one.
   habitability: number; // biome habitability, must be 0 or positive. 0 means the biome is uninhabitable, max value is not defined, but 100 is the actual max used by default
   iconsDensity: number;
   icons: string[];

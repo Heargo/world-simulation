@@ -1,4 +1,5 @@
 import { INFRASTRUCTURES_STATS, Infrastructure } from './infrastructures';
+import { Resource } from './resources';
 import { BiomesData, DIPLOMACY_ATTRACTIVITY_FACTOR } from './world';
 import { DiplomacyEnum } from './world-raw';
 
@@ -28,6 +29,7 @@ export class Burg {
   type: BurgType;
   startingInfrastructure: Infrastructure[];
   buildedInfrastructure: Infrastructure[];
+  availableResources: Resource[];
 
   constructor(data: any) {
     this.cell = data.cell;
@@ -43,6 +45,7 @@ export class Burg {
     this.type = data.type;
     this.startingInfrastructure = this.generateStartingInfrastructure(data);
     this.buildedInfrastructure = [];
+    this.availableResources = [];
     this.cityAttractivity = 0;
   }
 
