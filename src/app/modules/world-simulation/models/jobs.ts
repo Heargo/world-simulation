@@ -1,4 +1,5 @@
-import { Resource, ResourceType } from './resources';
+import { JOB_RELATED_RESOURCES } from '../data/jobs';
+import { Resource } from './resources';
 
 export enum JobType {
   Farmer = 'farmer',
@@ -10,20 +11,6 @@ export enum JobType {
   Merchant = 'merchant',
   Cook = 'cook',
 }
-
-export const JOB_RELATED_RESOURCES: { [key: string]: ResourceType[] } = {
-  [JobType.Farmer]: [ResourceType.Farming],
-  [JobType.Lumberjack]: [ResourceType.Woodcutting],
-  [JobType.Miner]: [ResourceType.Mining],
-  [JobType.Blacksmith]: [ResourceType.SmithingIngredient],
-  [JobType.CraftsMan]: [
-    ResourceType.Construction,
-    ResourceType.CraftingIngredient,
-  ],
-  [JobType.Alchemist]: [ResourceType.AlchemyIngredient],
-  [JobType.Merchant]: [ResourceType.Currency],
-  [JobType.Cook]: [ResourceType.CookingIngredient, ResourceType.Food],
-};
 
 export class Job {
   static JOB_ID = 0;
@@ -108,14 +95,3 @@ export class Job {
     return 0; //return 0 if the resource is not harvestable by the job
   }
 }
-
-export const JOBS: Job[] = [
-  new Job(JobType.Farmer, 1, 100, 1),
-  new Job(JobType.Lumberjack, 1, 100, 1),
-  new Job(JobType.Miner, 1, 100, 1),
-  new Job(JobType.Blacksmith, 1, 100, 1),
-  new Job(JobType.CraftsMan, 1, 100, 1),
-  new Job(JobType.Alchemist, 1, 100, 1),
-  new Job(JobType.Merchant, 1, 100, 1),
-  new Job(JobType.Cook, 1, 100, 1),
-];

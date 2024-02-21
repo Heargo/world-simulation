@@ -1,10 +1,9 @@
+import { JOB_RELATED_RESOURCES } from '../data/jobs';
+import { RESOURCE_TYPE_AVAILABILTY } from '../data/resources';
 import { Burg, BurgType } from './burg';
-import { JobType, JOB_RELATED_RESOURCES } from './jobs';
-import {
-  ResourceAvailablilty,
-  ResourceType,
-  RESOURCE_TYPE_AVAILABILTY,
-} from './resources';
+import { JobType } from './jobs';
+import { ResourceType } from './resources';
+
 import { WorldRaw } from './world-raw';
 
 export class World {

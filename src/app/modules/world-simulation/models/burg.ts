@@ -1,4 +1,5 @@
-import { INFRASTRUCTURES_STATS, Infrastructure } from './infrastructures';
+import { INFRASTRUCTURES_STATS } from '../data/infrastructure';
+import { Infrastructure } from './infrastructures';
 import { JobType } from './jobs';
 import { Resource, ResourceType } from './resources';
 import { BiomesData, DIPLOMACY_ATTRACTIVITY_FACTOR } from './world';

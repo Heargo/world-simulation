@@ -1,5 +1,6 @@
+import { JOBS } from '../data/jobs';
 import { Inventory } from './inventory';
-import { Job, JOBS, JobType } from './jobs';
+import { Job, JobType } from './jobs';
 import { Resource } from './resources';
 
 export interface PlayerEtat {

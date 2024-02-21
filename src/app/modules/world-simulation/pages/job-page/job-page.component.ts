@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
-import { JobType, JOB_RELATED_RESOURCES } from '../../models/jobs';
-import { RAW_RESOURCES, Resource } from '../../models/resources';
+import { ActivatedRoute } from '@angular/router';
+import { JOB_RELATED_RESOURCES } from '../../data/jobs';
+import { RAW_RESOURCES } from '../../data/resources';
+import { JobType } from '../../models/jobs';
+import { Resource } from '../../models/resources';
+
 import { PlayerService } from '../../services/player.service';
 import { WorldService } from '../../services/world.service';
 
