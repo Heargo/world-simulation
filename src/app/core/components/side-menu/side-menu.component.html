@@ -1,1 +1,25 @@
-<div class="container flex-col center top">Side menu</div>
+<div class="container flex-col center top">
+  <div *ngIf="!loadingService.loadComplete">no game loaded</div>
+  <div *ngIf="loadingService.loadComplete">
+    <div class="w-100 flex-col">
+      <!-- Transports -->
+      <div
+        class="gameplayCard w-100 flex-row middle left"
+        (click)="onGameplayClick('game/transport/carriage')">
+        <p>
+          {{ 'carriage' | translate }}
+        </p>
+      </div>
+      <!-- Jobs -->
+      <div
+        class="gameplayCard w-100 flex-row middle left"
+        *ngFor="let job of worldService.currentBurg.availableJobsTypes"
+        (click)="onGameplayClick('game/job/' + job)">
+        <p>
+          {{ job | translate }}
+          Lvl {{ playerService.player.getJob(job)?.currentLevel }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

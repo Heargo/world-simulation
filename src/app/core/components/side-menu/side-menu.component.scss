@@ -1,4 +1,12 @@
 .container {
   min-height: 100%;
   background-color: #ffc9c9;
+  padding: 0.5rem;
+}
+
+.gameplayCard {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  cursor: pointer;
 }

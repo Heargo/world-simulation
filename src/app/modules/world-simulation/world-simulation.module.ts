@@ -13,6 +13,7 @@ import { VehiculeDestination } from './pipes/vehicule-destination.pipe';
 import { vehiculeTimeLeft } from './pipes/vehicule-time-left.pipe';
 import { VehiculeAvailable } from './pipes/vehicule-in-burg.pipe';
 import { JobPageComponent } from './pages/job-page/job-page.component';
+import { HarvestSpeed } from './pipes/harvest-speed.pipe';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { JobPageComponent } from './pages/job-page/job-page.component';
     vehiculeTimeLeft,
     VehiculeAvailable,
     JobPageComponent,
+    HarvestSpeed,
   ],
   imports: [CommonModule, WorldSimulationRoutingModule, SharedModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

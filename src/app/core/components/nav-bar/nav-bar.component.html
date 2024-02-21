@@ -19,38 +19,10 @@
     [ngClass]="{ active: phoneMenuOpen }">
     <a
       (click)="phoneMenuOpen = false"
-      routerLink="/starter-kit"
-      routerLinkActive="active"
-      >Starter kit</a
-    >
-    <a
-      (click)="phoneMenuOpen = false"
       routerLink="/game"
       routerLinkActive="active"
       >Play</a
     >
-    <!-- <a
-      *ngIf="!authService.connected"
-      (click)="phoneMenuOpen = false"
-      routerLink="auth/login"
-      routerLinkActive="active"
-      >{{ 'auth.login' | translate }}</a
-    >
-    <a
-      *ngIf="!authService.connected"
-      (click)="phoneMenuOpen = false"
-      routerLink="auth/register"
-      routerLinkActive="active"
-      class="btn primary"
-      >{{ 'auth.register' | translate }}</a
-    >
-    <a
-      *ngIf="authService.connected"
-      (click)="phoneMenuOpen = false"
-      routerLink="user/profile"
-      routerLinkActive="active"
-      >{{ 'auth.profile' | translate }}</a
-    > -->
   </div>
   <div class="menu nav-icon">
     <img

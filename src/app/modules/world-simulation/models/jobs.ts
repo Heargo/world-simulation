@@ -48,6 +48,7 @@ export class Job {
       this.currentExperience = 0;
       this.nextLevelExperience = this.calculateExperienceToNextLevel();
       this.maxHarvestingValue += this.currentLevel;
+      console.log('Level up', this.type);
     }
   }
 

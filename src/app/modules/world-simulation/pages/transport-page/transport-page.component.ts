@@ -24,24 +24,11 @@ export class TransportPageComponent extends BaseAppComponent implements OnInit {
 
   ngOnInit(): void {
     let burg = this.worldService.currentBurg;
-    console.log(
-      'there is ',
-      this.transportService.carriages[burg.id].length,
-      ' carriages going through ',
-      burg.name,
-      this.transportService.carriages[burg.id]
-    );
+
     this.vehiculesInBurg$ = timer(0, 1 * 1000).pipe(
       map(() =>
         this.transportService.getCarriagesByBurg(this.worldService.currentBurg)
       )
     );
-
-    this.playerService.harvest(RAW_RESOURCES['wood']);
-
-    //wait 1.5 seconds and start harvesting stone
-    setTimeout(() => {
-      this.playerService.harvest(RAW_RESOURCES['stone']);
-    }, 1.5 * 1000);
   }
 }

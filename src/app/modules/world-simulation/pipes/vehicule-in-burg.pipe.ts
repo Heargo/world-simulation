@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Vehicle } from '../models/vehicule';
-import { Observable } from 'rxjs';
+import { Observable, map, timer } from 'rxjs';
 import { WorldService } from '../services/world.service';
 
 @Pipe({
@@ -10,11 +10,8 @@ export class VehiculeAvailable implements PipeTransform {
   constructor(private readonly worldService: WorldService) {}
 
   transform(value: Vehicle): Observable<boolean> {
-    return new Observable<boolean>(observer => {
-      setInterval(() => {
-        let isInBurg = value.isInBurg(this.worldService.currentBurg);
-        observer.next(isInBurg);
-      }, 1000);
-    });
+    return timer(0, 1 * 1000).pipe(
+      map(() => value.isInBurg(this.worldService.currentBurg))
+    );
   }
 }

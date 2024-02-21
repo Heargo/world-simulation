@@ -36,7 +36,7 @@ export class PlayerService {
     if (this.resourceHarvest) clearInterval(this.resourceHarvest);
 
     //start harvesting the resource
-    this.player.etat.currentHarvest = resource;
+    this.player.setHarvestState(resource);
     let harvestingSpeedInMs = this.getHarvestingSpeed(resource);
 
     //find quantity of resource that will be harvested per harvest
@@ -54,6 +54,7 @@ export class PlayerService {
     this.player.inventory.add(resource, quantity);
     this.player.gainExperienceFromHarvesting(resource, quantity);
     let newSpeed = this.getHarvestingSpeed(resource);
+    console.log('harvest', resource.name);
     this.resourceHarvest = setInterval(() => {
       this.performHarvesting(resource, quantity);
     }, newSpeed);

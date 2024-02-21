@@ -8,6 +8,7 @@ export interface PlayerEtat {
   timeLeftInTransit?: number;
   destinationBurgId?: number;
   currentHarvest?: Resource;
+  currentJobActive?: JobType;
 }
 
 export class Player {
@@ -29,6 +30,11 @@ export class Player {
     this.etat.isInTransit = true;
     this.etat.timeLeftInTransit = timeLeftInTransit;
     this.etat.destinationBurgId = destinationBurgId;
+  }
+
+  setHarvestState(resource: Resource): void {
+    this.etat.currentHarvest = resource;
+    this.etat.currentJobActive = this.getJobForResource(resource)?.type;
   }
 
   stopTransit(): void {
