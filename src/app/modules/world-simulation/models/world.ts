@@ -1,4 +1,10 @@
 import { Burg, BurgType } from './burg';
+import { JobType, JOB_RELATED_RESOURCES } from './jobs';
+import {
+  ResourceAvailablilty,
+  ResourceType,
+  RESOURCE_TYPE_AVAILABILTY,
+} from './resources';
 import { WorldRaw } from './world-raw';
 
 export class World {
@@ -70,12 +76,91 @@ export class World {
       if (raw.burgs[i].name == undefined) continue;
       let burg = new Burg(raw.burgs[i]);
       let burgCell = raw.cells[burg.cell!];
-      burg.updateBurgAttractivity(this.biomesData[burgCell.biome]);
+      let biome = this.biomesData[burgCell.biome];
+      burg.updateBurgAttractivity(biome);
+      burg.availableResourcesTypes = this.resourceTypeAvailableInBurg(
+        biome.name
+      );
+      burg.resourceTypeFactor = this.getResourceTypeFactor(biome.name);
+      burg.availableJobsTypes = this.getAvailableJobsTypes(burg);
       raw.burgs[i] = burg;
     }
     //remove burgs with undefined id
     raw.burgs = raw.burgs.filter((b: Burg) => b.id != undefined);
     return raw as MapData;
+  }
+
+  private getAvailableJobsTypes(burg: Burg): JobType[] {
+    let availableJobsTypes: JobType[] = [];
+    let availableResourcesTypes = burg.availableResourcesTypes;
+    for (let job in JOB_RELATED_RESOURCES) {
+      if (
+        availableResourcesTypes.some(resourceType =>
+          JOB_RELATED_RESOURCES[job].includes(resourceType)
+        )
+      ) {
+        availableJobsTypes.push(job as JobType);
+      }
+    }
+    return availableJobsTypes;
+  }
+
+  private resourceTypeAvailableInBurg(biomeName: string): ResourceType[] {
+    let availableResources: ResourceType[] = [];
+    //for each resource Type, check if the name of the biome contains any of the names in the resourceTypeAvailablilty names
+    for (let key in RESOURCE_TYPE_AVAILABILTY) {
+      let resourceType = key as ResourceType;
+      let resourceAvailablilties = RESOURCE_TYPE_AVAILABILTY[resourceType];
+      let notAvailable = false;
+      for (let i = 0; i < resourceAvailablilties.length; i++) {
+        if (resourceAvailablilties[i].quantityFactor === 0) {
+          let names = resourceAvailablilties[i].names;
+          if (
+            names.some(name =>
+              biomeName.toLowerCase().includes(name.toLowerCase())
+            )
+          ) {
+            //found availability of 0 for this resource type, no need to check the other availabilities modifiers
+            notAvailable = true;
+            break;
+          }
+        }
+      }
+      if (!notAvailable) availableResources.push(resourceType);
+    }
+    return availableResources;
+  }
+
+  private getResourceTypeFactor(biomeName: string): { [key: string]: number } {
+    let resourceTypeFactor: { [key: string]: number } = {};
+    //for each resource Type, get the highest quantity factor
+    for (let key in RESOURCE_TYPE_AVAILABILTY) {
+      let resourceType = key as ResourceType;
+      let resourceAvailablilties = RESOURCE_TYPE_AVAILABILTY[resourceType];
+      for (let i = 0; i < resourceAvailablilties.length; i++) {
+        let names = resourceAvailablilties[i].names;
+        if (
+          names.some(name =>
+            biomeName.toLowerCase().includes(name.toLowerCase())
+          )
+        ) {
+          //look for the highest factor
+          if (Object.keys(resourceTypeFactor).includes(resourceType)) {
+            if (
+              resourceTypeFactor[resourceType] <
+              resourceAvailablilties[i].quantityFactor
+            ) {
+              resourceTypeFactor[resourceType] =
+                resourceAvailablilties[i].quantityFactor;
+            }
+          } else {
+            resourceTypeFactor[resourceType] =
+              resourceAvailablilties[i].quantityFactor;
+          }
+        }
+      }
+    }
+    return resourceTypeFactor;
   }
 }
 

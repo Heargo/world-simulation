@@ -1,5 +1,6 @@
 import { INFRASTRUCTURES_STATS, Infrastructure } from './infrastructures';
-import { Resource } from './resources';
+import { JobType } from './jobs';
+import { Resource, ResourceType } from './resources';
 import { BiomesData, DIPLOMACY_ATTRACTIVITY_FACTOR } from './world';
 import { DiplomacyEnum } from './world-raw';
 
@@ -29,7 +30,9 @@ export class Burg {
   type: BurgType;
   startingInfrastructure: Infrastructure[];
   buildedInfrastructure: Infrastructure[];
-  availableResources: Resource[];
+  availableResourcesTypes: ResourceType[];
+  availableJobsTypes: JobType[];
+  resourceTypeFactor: { [key: string]: number };
 
   constructor(data: any) {
     this.cell = data.cell;
@@ -45,8 +48,10 @@ export class Burg {
     this.type = data.type;
     this.startingInfrastructure = this.generateStartingInfrastructure(data);
     this.buildedInfrastructure = [];
-    this.availableResources = [];
+    this.availableResourcesTypes = [];
+    this.availableJobsTypes = [];
     this.cityAttractivity = 0;
+    this.resourceTypeFactor = {};
   }
 
   generateStartingInfrastructure(data: any) {
@@ -67,6 +72,18 @@ export class Burg {
   private adaptInfraToCity(infra: Infrastructure) {
     //TODO: adapt infra to city
     return infra;
+  }
+
+  getResourceHarvestingQuantity(resource: Resource) {
+    if (this.availableResourcesTypes.includes(resource.type)) {
+      return resource.quantity * this.resourceTypeFactor[resource.type];
+    }
+    return 0;
+  }
+
+  getLocalResourceValue(resource: Resource) {
+    let factor = this.resourceTypeFactor[resource.type];
+    return resource.value / factor;
   }
 
   updateBurgAttractivity(biome: BiomesData) {

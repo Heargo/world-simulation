@@ -1,11 +1,12 @@
 import { Inventory } from './inventory';
-import { Job, JobType } from './jobs';
+import { Job, JOBS, JobType } from './jobs';
 import { Resource } from './resources';
 
 export interface PlayerEtat {
   isInTransit: boolean;
   timeLeftInTransit?: number;
   destinationBurgId?: number;
+  currentHarvest?: Resource;
 }
 
 export class Player {
@@ -15,7 +16,7 @@ export class Player {
 
   constructor(
     inventory: Inventory = new Inventory(),
-    jobs: Job[] = [],
+    jobs: Job[] = JOBS,
     etat: PlayerEtat = { isInTransit: false }
   ) {
     this.inventory = inventory;
@@ -37,6 +38,18 @@ export class Player {
 
   getJob(job: JobType): Job | undefined {
     return this.jobs.find(j => j.type === job);
+  }
+
+  getJobForResource(resource: Resource): Job | undefined {
+    return this.jobs.find(j => j.canHarvestResource(resource));
+  }
+
+  gainExperienceFromHarvesting(resource: Resource, quantity: number): void {
+    let job = this.getJobForResource(resource);
+    if (job) {
+      let xp = job?.getExperienceGainedFromResourceHarvesting(resource);
+      job.gainExp(xp * quantity);
+    }
   }
 
   canHarvestResource(resource: Resource): boolean {

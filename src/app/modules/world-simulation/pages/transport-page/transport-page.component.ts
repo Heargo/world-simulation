@@ -4,6 +4,8 @@ import { TransportService } from '../../services/transports.service';
 import { Vehicle } from '../../models/vehicule';
 import { WorldService } from '../../services/world.service';
 import { Observable, map, timer } from 'rxjs';
+import { PlayerService } from '../../services/player.service';
+import { RAW_RESOURCES } from '../../models/resources';
 
 @Component({
   selector: 'app-transport-page',
@@ -14,7 +16,8 @@ export class TransportPageComponent extends BaseAppComponent implements OnInit {
   vehiculesInBurg$!: Observable<Vehicle[]>;
   constructor(
     private readonly worldService: WorldService,
-    private readonly transportService: TransportService
+    private readonly transportService: TransportService,
+    private readonly playerService: PlayerService
   ) {
     super();
   }
@@ -33,5 +36,12 @@ export class TransportPageComponent extends BaseAppComponent implements OnInit {
         this.transportService.getCarriagesByBurg(this.worldService.currentBurg)
       )
     );
+
+    this.playerService.harvest(RAW_RESOURCES['wood']);
+
+    //wait 1.5 seconds and start harvesting stone
+    setTimeout(() => {
+      this.playerService.harvest(RAW_RESOURCES['stone']);
+    }, 1.5 * 1000);
   }
 }

@@ -28,7 +28,6 @@ export const JOB_RELATED_RESOURCES: { [key: string]: ResourceType[] } = {
 export class Job {
   static JOB_ID = 0;
 
-  id: number;
   type: JobType;
   currentLevel: number;
   maxLevel: number;
@@ -37,7 +36,6 @@ export class Job {
   maxHarvestingValue: number;
 
   constructor(
-    id: number,
     type: JobType,
     currentLevel: number,
     maxLevel: number,
@@ -45,7 +43,6 @@ export class Job {
     currentExperience?: number,
     nextLevelExperience?: number
   ) {
-    this.id = id;
     this.type = type;
     this.currentLevel = currentLevel;
     this.maxLevel = maxLevel;
@@ -61,13 +58,22 @@ export class Job {
   levelUp() {
     if (this.currentLevel < this.maxLevel) {
       this.currentLevel++;
+      this.currentExperience = 0;
       this.nextLevelExperience = this.calculateExperienceToNextLevel();
       this.maxHarvestingValue += this.currentLevel;
     }
   }
 
+  gainExp(experience: number) {
+    if (this.currentLevel === this.maxLevel) return;
+    this.currentExperience += experience;
+    if (this.currentExperience >= this.nextLevelExperience) {
+      this.levelUp();
+    }
+  }
+
   calculateExperienceToNextLevel(): number {
-    return this.currentLevel ** 2 * 100;
+    return this.currentLevel ** 2 * 10;
   }
 
   canHarvestResource(resource: Resource): boolean {
@@ -83,15 +89,33 @@ export class Job {
 
   getHarvestingSpeed(resource: Resource): number {
     if (JOB_RELATED_RESOURCES[this.type].includes(resource.type)) {
-      // speed boost is between 1 and 10. 1 is the slowest, 10 is the fastest
-      // Bonus apply only if the resource as a value lower than 90 % maxHarvestingValue
+      // Bonus apply only if the resource as a value lower than 90 % maxHarvestingValue or 1
       // This is to avoid avoid bonus on new unlocked resources
-      if (resource.value < this.maxHarvestingValue * 0.9) {
-        let boost = (this.currentLevel * 10) / this.maxLevel;
+      if (resource.value <= Math.max(this.maxHarvestingValue * 0.9, 1)) {
+        //linear interpolation between minBoost and maxBoost based on the level of the job
+        let minLevel = 1;
+        let minBoost = 1;
+        let maxBoost = 10;
+        let boost =
+          ((this.maxLevel - this.currentLevel) / (this.maxLevel - minLevel)) *
+            minBoost +
+          ((this.currentLevel - minLevel) / (this.maxLevel - minLevel)) *
+            maxBoost;
 
-        return 1000 / boost; //return the time in ms to harvest the resource
+        return 1000 / boost; //return the time in ms to harvest the resource. minimum harvesting time is 100ms
       }
     }
     return 0; //return 0 if the resource is not harvestable by the job
   }
 }
+
+export const JOBS: Job[] = [
+  new Job(JobType.Farmer, 1, 100, 1),
+  new Job(JobType.Lumberjack, 1, 100, 1),
+  new Job(JobType.Miner, 1, 100, 1),
+  new Job(JobType.Blacksmith, 1, 100, 1),
+  new Job(JobType.CraftsMan, 1, 100, 1),
+  new Job(JobType.Alchemist, 1, 100, 1),
+  new Job(JobType.Merchant, 1, 100, 1),
+  new Job(JobType.Cook, 1, 100, 1),
+];

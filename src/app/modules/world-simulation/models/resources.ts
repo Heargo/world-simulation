@@ -4,7 +4,7 @@ export class Resource {
   type: ResourceType;
   value: number;
   spaceUsed: number;
-  defaultAvailabililtyFactor: number = 1;
+  quantity: number = 1;
   modificatedAvailabililtyFactor?: ResourceAvailablilty[] = [];
   harvestTime?: number = 1;
   harvestRequiredResources?: { [key: string]: number } = {};
@@ -15,26 +15,18 @@ export class Resource {
     type: ResourceType,
     value: number,
     spaceUsed: number,
-    defaultAvailabililtyFactor?: number,
-    modificatedAvailabililtyFactor?: ResourceAvailablilty[],
-    harvestRequiredResources?: { [key: string]: number }
+    quantity: number = 1,
+    harvestRequiredResources: { [key: string]: number } = {}
   ) {
     this.name = name;
     this.icon = name.toLowerCase();
     this.type = type;
     this.value = value;
     this.spaceUsed = spaceUsed;
-    this.defaultAvailabililtyFactor = 1;
+    this.quantity = 1;
     this.passive = false;
-    if (modificatedAvailabililtyFactor) {
-      this.modificatedAvailabililtyFactor = modificatedAvailabililtyFactor;
-    }
-    if (defaultAvailabililtyFactor) {
-      this.defaultAvailabililtyFactor = defaultAvailabililtyFactor;
-    }
-    if (harvestRequiredResources) {
-      this.harvestRequiredResources = harvestRequiredResources;
-    }
+    this.quantity = quantity;
+    this.harvestRequiredResources = harvestRequiredResources;
   }
 }
 
@@ -98,7 +90,9 @@ let biomes = [
   'Wetland',
 ];
 
-const ResourceTypeAvailability: { [key: string]: ResourceAvailablilty[] } = {
+export const RESOURCE_TYPE_AVAILABILTY: {
+  [key: string]: ResourceAvailablilty[];
+} = {
   [ResourceType.Woodcutting]: [
     {
       names: ['forest', 'taiga'],
@@ -132,28 +126,7 @@ const ResourceTypeAvailability: { [key: string]: ResourceAvailablilty[] } = {
 };
 
 export const RAW_RESOURCES: { [key: string]: Resource } = {
-  wood: new Resource(
-    'Wood',
-    ResourceType.Woodcutting,
-    1,
-    5,
-    1,
-    ResourceTypeAvailability[ResourceType.Woodcutting]
-  ),
-  stone: new Resource(
-    'Stone',
-    ResourceType.Mining,
-    1,
-    5,
-    1,
-    ResourceTypeAvailability[ResourceType.Mining]
-  ),
-  copper: new Resource(
-    'Copper',
-    ResourceType.Mining,
-    1,
-    5,
-    1,
-    ResourceTypeAvailability[ResourceType.Mining]
-  ),
+  wood: new Resource('Wood', ResourceType.Woodcutting, 1, 5, 1),
+  stone: new Resource('Stone', ResourceType.Mining, 1, 5, 1),
+  copper: new Resource('Copper', ResourceType.Mining, 1, 5, 1),
 };
