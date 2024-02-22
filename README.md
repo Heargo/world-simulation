@@ -1,3 +1,5 @@
+project [excalidraw](https://excalidraw.com/#room=769f3b55e474ca7631d9,wZNASPDZq4aLbJgiu_z76A)
+
 # AngularStarterKit
 
 This starter kit use angular version `15.2.0` and includes the following features:
