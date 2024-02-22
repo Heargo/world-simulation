@@ -1,16 +1,11 @@
 <nav class="flex-row btw middle">
   <!-- Logo -->
   <div class="flex-row middle left">
-    <!-- <a routerLink="/home" class="logo" (click)="phoneMenuOpen = false">
-      <img src="assets/icons/logo.svg" alt="logo" />
-    </a>
-    <select name="lang-options" class="basic">
-      <option
-        *ngFor="let lang of supportedLanguages"
-        (click)="changeLang(lang.code)">
-        {{ lang.label }}
-      </option>
-    </select> -->
+    <div *ngIf="playerService.player.etat.currentJobActive">
+      <p>
+        Active Job: {{ playerService.player.etat.currentJobActive | translate }}
+      </p>
+    </div>
   </div>
 
   <!-- nav items -->

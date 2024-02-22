@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { BaseAppComponent } from '../base-app/base-app.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SUPPORTED_LANGUAGES } from '../../constants/languages';
+import { PlayerService } from '../../../modules/world-simulation/services/player.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -16,12 +17,8 @@ export class NavBarComponent extends BaseAppComponent {
   supportedLanguages = SUPPORTED_LANGUAGES;
   constructor(
     public readonly authService: AuthService,
-    private readonly translate: TranslateService
+    public readonly playerService: PlayerService
   ) {
     super();
-  }
-
-  changeLang(lang: string): void {
-    this.translate.use(lang);
   }
 }
