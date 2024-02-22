@@ -4,7 +4,7 @@ export class Resource {
   type: ResourceType;
   value: number;
   spaceUsed: number;
-  quantity: number = 1;
+  quantity: number;
   modificatedAvailabililtyFactor?: ResourceAvailablilty[] = [];
   harvestTime?: number = 1;
   harvestRequiredResources?: { [key: string]: number } = {};
@@ -23,7 +23,7 @@ export class Resource {
     this.type = type;
     this.value = value;
     this.spaceUsed = spaceUsed;
-    this.quantity = 1;
+    this.quantity = quantity;
     this.passive = false;
     this.quantity = quantity;
     this.harvestRequiredResources = harvestRequiredResources;

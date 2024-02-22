@@ -1,0 +1,18 @@
+<div
+  class="resource flex-row left middle"
+  [ngClass]="{ notHarvestable: !(resource | canHarvest) }"
+  *ngIf="job.maxHarvestingValue >= resource.value; else locked">
+  <app-icon [name]="'default-resource'"></app-icon>
+  <p>{{ resource.name | translate }}</p>
+  <div class="harvestingBarContainer">
+    <div
+      class="bar"
+      [ngClass]="{
+        active: playerService.player.etat.currentHarvest?.name === resource.name
+      }"
+      [ngStyle]="{ animationDuration: job | harvestSpeed: resource }"></div>
+  </div>
+</div>
+<ng-template #locked>
+  <div class="resource locked flex-row center middle">locked</div>
+</ng-template>

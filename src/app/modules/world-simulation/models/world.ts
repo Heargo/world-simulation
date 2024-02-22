@@ -136,6 +136,8 @@ export class World {
     for (let key in RESOURCE_TYPE_AVAILABILTY) {
       let resourceType = key as ResourceType;
       let resourceAvailablilties = RESOURCE_TYPE_AVAILABILTY[resourceType];
+      //set the factor to 1 by default
+      resourceTypeFactor[resourceType] = 1;
       for (let i = 0; i < resourceAvailablilties.length; i++) {
         let names = resourceAvailablilties[i].names;
         if (
@@ -143,16 +145,16 @@ export class World {
             biomeName.toLowerCase().includes(name.toLowerCase())
           )
         ) {
-          //look for the highest factor
-          if (Object.keys(resourceTypeFactor).includes(resourceType)) {
-            if (
-              resourceTypeFactor[resourceType] <
-              resourceAvailablilties[i].quantityFactor
-            ) {
-              resourceTypeFactor[resourceType] =
-                resourceAvailablilties[i].quantityFactor;
-            }
-          } else {
+          //if found a 0 factor, no need to check the other availabilities modifiers
+          if (resourceTypeFactor[resourceType] === 0) {
+            resourceTypeFactor[resourceType] = 0;
+            break;
+          }
+          //look for the highest factor,
+          if (
+            resourceTypeFactor[resourceType] <
+            resourceAvailablilties[i].quantityFactor
+          ) {
             resourceTypeFactor[resourceType] =
               resourceAvailablilties[i].quantityFactor;
           }

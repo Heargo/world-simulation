@@ -1,18 +1,9 @@
 <div class="flex-row main-container">
   <div class="resources w-100 flex-row top left">
-    <div
-      class="resource"
-      *ngFor="let r of availableResources"
-      (click)="onHarvest(r)">
-      <p>{{ r.name | translate }}</p>
-      <div class="harvestingBarContainer">
-        <div
-          class="bar"
-          [ngClass]="{
-            active: playerService.player.etat.currentHarvest?.name === r.name
-          }"
-          [ngStyle]="{ animationDuration: job | harvestSpeed: r }"></div>
-      </div>
-    </div>
+    <app-resource-card
+      *ngFor="let resource of availableResources"
+      [resource]="resource"
+      [job]="job"
+      (click)="onHarvest(resource)"></app-resource-card>
   </div>
 </div>

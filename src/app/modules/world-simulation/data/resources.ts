@@ -66,5 +66,6 @@ export const RESOURCE_TYPE_AVAILABILTY: {
 export const RAW_RESOURCES: { [key: string]: Resource } = {
   wood: new Resource('Wood', ResourceType.Woodcutting, 1, 5, 1),
   stone: new Resource('Stone', ResourceType.Mining, 1, 5, 1),
-  copper: new Resource('Copper', ResourceType.Mining, 1, 5, 1),
+  copper: new Resource('Copper', ResourceType.Mining, 3, 5, 1),
+  iron: new Resource('Iron', ResourceType.Mining, 10, 5, 1),
 };

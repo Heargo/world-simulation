@@ -38,6 +38,7 @@ export class JobPageComponent extends BaseAppComponent implements OnInit {
           JOB_RELATED_RESOURCES[jobType].includes(r.type)
         );
       }
+      console.log(this.playerService.player);
     });
   }
 
