@@ -2,6 +2,13 @@
   "workbench.colorCustomizations": {
     "iLoveWorkSpaceColors": true,
     "iLoveWorkSpaceRandom": false,
-    "useWorkspaceLite": true
+    "useWorkspaceLite": true,
+    "titleBar.activeBackground": "#a80332",
+    "titleBar.activeForeground": "#000000",
+    "titleBar.inactiveBackground": "#a80332",
+    "titleBar.inactiveForeground": "#000000",
+    "titleBar.border": "#a80332",
+    "activityBar.foreground": "#a80332",
+    "tab.activeBorder": "#a80332"
   }
 }

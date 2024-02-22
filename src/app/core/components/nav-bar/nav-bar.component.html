@@ -1,34 +1,33 @@
 <nav class="flex-row btw middle">
-  <!-- Logo -->
-  <div class="flex-row middle left">
-    <div *ngIf="playerService.player.etat.currentJobActive">
+  <!-- start -->
+  <div class="flex-row w-100 middle left">
+    <div
+      *ngIf="playerService.player.etat.currentJobActive"
+      class="flex-row w-100 middle left">
       <p>
-        Active Job: {{ playerService.player.etat.currentJobActive | translate }}
+        {{ playerService.player.etat.currentJobActive.type | translate }}
       </p>
+      <div class="bar-container w-100">
+        <p class="text">
+          {{ playerService.player.etat.currentJobActive.currentExperience }} /
+          {{ playerService.player.etat.currentJobActive.nextLevelExperience }}
+        </p>
+        <div
+          class="bar"
+          [ngStyle]="{
+            width:
+              (playerService.player.etat.currentJobActive.currentExperience /
+                playerService.player.etat.currentJobActive
+                  .nextLevelExperience) *
+                100 +
+              '%'
+          }"></div>
+      </div>
     </div>
   </div>
 
-  <!-- nav items -->
-  <div
-    class="flex-row menu middle content"
-    [ngClass]="{ active: phoneMenuOpen }">
-    <a
-      (click)="phoneMenuOpen = false"
-      routerLink="/game"
-      routerLinkActive="active"
-      >Play</a
-    >
-  </div>
-  <div class="menu nav-icon">
-    <img
-      *ngIf="!phoneMenuOpen"
-      (click)="phoneMenuOpen = true"
-      src="assets/icons/navbar.svg"
-      alt="open menu" />
-    <img
-      *ngIf="phoneMenuOpen"
-      (click)="phoneMenuOpen = false"
-      src="assets/icons/close.svg"
-      alt="close menu" />
+  <!-- end -->
+  <div class="flex-row middle right" *ngIf="!loadingService.loadComplete">
+    <a routerLink="/game" routerLinkActive="active">Play</a>
   </div>
 </nav>

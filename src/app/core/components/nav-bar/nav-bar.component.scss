@@ -60,3 +60,21 @@ nav {
     }
   }
 }
+
+.bar-container {
+  position: relative;
+  height: 1rem;
+  border-radius: 0.2rem;
+  background-color: rgb(234, 234, 234);
+  .text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .bar {
+    height: 100%;
+    border-radius: 0.2rem;
+    background-color: rgb(92, 130, 234);
+  }
+}

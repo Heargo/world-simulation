@@ -1,3 +1,13 @@
+export interface ResourceData {
+  name: string;
+  type: ResourceType;
+  value: number;
+  spaceUsed?: number;
+  quantity?: number;
+  harvestRequiredResources?: { [key: string]: number };
+  passive?: boolean;
+}
+
 export class Resource {
   name: string;
   icon: string;
@@ -10,23 +20,25 @@ export class Resource {
   harvestRequiredResources?: { [key: string]: number } = {};
   passive: boolean = false;
 
-  constructor(
-    name: string,
-    type: ResourceType,
-    value: number,
-    spaceUsed: number,
-    quantity: number = 1,
-    harvestRequiredResources: { [key: string]: number } = {}
-  ) {
-    this.name = name;
-    this.icon = name.toLowerCase();
-    this.type = type;
-    this.value = value;
-    this.spaceUsed = spaceUsed;
-    this.quantity = quantity;
-    this.passive = false;
-    this.quantity = quantity;
-    this.harvestRequiredResources = harvestRequiredResources;
+  constructor(data: ResourceData) {
+    this.name = data.name;
+    this.icon = data.name.toLowerCase().split(' ').join('-');
+    this.type = data.type;
+    if (data.value) this.value = data.value;
+    else this.value = 1;
+
+    if (data.spaceUsed) this.spaceUsed = data.spaceUsed;
+    else this.spaceUsed = 1;
+
+    if (data.quantity) this.quantity = data.quantity;
+    else this.quantity = 1;
+
+    if (data.harvestRequiredResources)
+      this.harvestRequiredResources = data.harvestRequiredResources;
+    else this.harvestRequiredResources = {};
+
+    if (data.passive) this.passive = data.passive;
+    else this.passive = false;
   }
 }
 
