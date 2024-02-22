@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { LoadingService } from '../../../modules/world-simulation/services/loading.service';
-import { WorldService } from '../../../modules/world-simulation/services/world.service';
-import { PlayerService } from '../../../modules/world-simulation/services/player.service';
 import { Route, Router } from '@angular/router';
+import { LoadingService } from '../../../modules/game/services/loading.service';
+import { PlayerService } from '../../../modules/game/services/player.service';
+import { WorldService } from '../../../modules/game/services/world.service';
 
 @Component({
   selector: 'app-side-menu',

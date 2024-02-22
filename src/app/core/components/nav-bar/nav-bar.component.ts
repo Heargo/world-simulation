@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { BaseAppComponent } from '../base-app/base-app.component';
-import { PlayerService } from '../../../modules/world-simulation/services/player.service';
-import { LoadingService } from '../../../modules/world-simulation/services/loading.service';
+import { LoadingService } from '../../../modules/game/services/loading.service';
+import { PlayerService } from '../../../modules/game/services/player.service';
 
 @Component({
   selector: 'app-nav-bar',

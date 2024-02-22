@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoadingPageComponent } from './pages/loading-page/loading-page.component';
-import { WorldSimulationRoutingModule } from './world-simulation-routing.module';
+import { GameRoutingModule } from './game-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { MapComponent } from './components/map/map.component';
 import { BurgCardComponent } from './components/burg-card/burg-card.component';
@@ -34,7 +34,7 @@ import { ResourceCardComponent } from './components/resource-card/resource-card.
     CanHarvestPipe,
     ResourceCardComponent,
   ],
-  imports: [CommonModule, WorldSimulationRoutingModule, SharedModule],
+  imports: [CommonModule, GameRoutingModule, SharedModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class WorldSimulationModule {}
+export class GameModule {}

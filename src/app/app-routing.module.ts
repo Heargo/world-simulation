@@ -29,11 +29,9 @@ const routes: Routes = [
       import('./modules/user/user.module').then(m => m.UserModule),
   },
   {
-    path: ROUTES.worldSimulation,
+    path: ROUTES.game,
     loadChildren: () =>
-      import('./modules/world-simulation/world-simulation.module').then(
-        m => m.WorldSimulationModule
-      ),
+      import('./modules/game/game.module').then(m => m.GameModule),
   },
   { path: ROUTES.notFound, component: NotFoundComponent },
   { path: '**', redirectTo: ROUTES.notFound },
