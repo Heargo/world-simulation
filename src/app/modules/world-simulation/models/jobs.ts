@@ -91,6 +91,8 @@ export class Job {
             maxBoost;
 
         return 1000 / boost; //return the time in ms to harvest the resource. minimum harvesting time is 100ms
+      } else {
+        return 1000;
       }
     }
     return 0; //return 0 if the resource is not harvestable by the job

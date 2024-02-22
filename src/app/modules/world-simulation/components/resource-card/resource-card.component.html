@@ -10,7 +10,9 @@
       [ngClass]="{
         active: playerService.player.etat.currentHarvest?.name === resource.name
       }"
-      [ngStyle]="{ animationDuration: job | harvestSpeed: resource }"></div>
+      [ngStyle]="{
+        animationDuration: resource | harvestSpeed: job.currentLevel
+      }"></div>
   </div>
 </div>
 <ng-template #locked>
