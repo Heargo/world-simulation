@@ -29,8 +29,9 @@ export class PlayerService {
   }
 
   harvest(resource: Resource): void {
-    // If the player is already harvesting the same resource, we don't start a new action
+    // If the player is already harvesting the same resource, or can't harvest it we don't start a new action
     if (this.player.etat.currentHarvest?.name === resource.name) return;
+    if (!this.canHarvestResource(resource)) return;
 
     // If the player is already harvesting a resource, we stop the action
     if (this.resourceHarvest) clearInterval(this.resourceHarvest);
@@ -51,12 +52,22 @@ export class PlayerService {
 
   private performHarvesting(resource: Resource, quantity: number): void {
     clearInterval(this.resourceHarvest);
+
+    //consume the required resources to harvest the resource
+    if (resource.harvestRequiredResources) {
+      this.player.inventory.removeMultiple(resource.harvestRequiredResources);
+    }
+    //collect it & gain experience
     this.player.inventory.add(resource, quantity);
     this.player.gainExperienceFromHarvesting(resource, quantity);
+
+    console.log('harvested', resource.name);
+    //continue harvesting
     let newSpeed = this.getHarvestingSpeed(resource);
-    console.log('harvest', resource.name);
-    this.resourceHarvest = setInterval(() => {
-      this.performHarvesting(resource, quantity);
-    }, newSpeed);
+    if (this.canHarvestResource(resource)) {
+      this.resourceHarvest = setInterval(() => {
+        this.performHarvesting(resource, quantity);
+      }, newSpeed);
+    }
   }
 }

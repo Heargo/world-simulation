@@ -60,6 +60,10 @@ export class Player {
   }
 
   canHarvestResource(resource: Resource): boolean {
-    return this.jobs.some(j => j.canHarvestResource(resource));
+    let jobOk = this.jobs.some(j => j.canHarvestResource(resource));
+    let playerHasResources = this.inventory.hasResources(
+      resource.harvestRequiredResources
+    );
+    return jobOk && playerHasResources;
   }
 }
