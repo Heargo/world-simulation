@@ -16,6 +16,7 @@ import { JobPageComponent } from './pages/job-page/job-page.component';
 import { HarvestSpeed } from './pipes/harvest-speed.pipe';
 import { CanHarvestPipe } from './pipes/can-harvest.pipe';
 import { ResourceCardComponent } from './components/resource-card/resource-card.component';
+import { InventoryPageComponent } from './pages/inventory-page/inventory-page.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ResourceCardComponent } from './components/resource-card/resource-card.
     HarvestSpeed,
     CanHarvestPipe,
     ResourceCardComponent,
+    InventoryPageComponent,
   ],
   imports: [CommonModule, GameRoutingModule, SharedModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,0 +1,5 @@
+<div class="flex-row left top">
+  <div *ngFor="let item of playerService.player.inventory.content" class="item">
+    {{ item.resource.name }} - {{ item.quantity }}
+  </div>
+</div>

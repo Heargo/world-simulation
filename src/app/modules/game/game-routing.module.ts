@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { JobPageComponent } from './pages/job-page/job-page.component';
 import { LoadingPageComponent } from './pages/loading-page/loading-page.component';
 import { TransportPageComponent } from './pages/transport-page/transport-page.component';
+import { InventoryPageComponent } from './pages/inventory-page/inventory-page.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path: 'job/:jobType',
     component: JobPageComponent,
+  },
+  {
+    path: 'inventory',
+    component: InventoryPageComponent,
   },
 ];
 
