@@ -1,0 +1,8 @@
+.card {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  &.full {
+    width: calc(100% - 1rem);
+  }
+}

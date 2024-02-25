@@ -1,0 +1,42 @@
+.card {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+
+  &.available {
+    opacity: 1;
+  }
+
+  .dest {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  .name {
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+}
+
+.steps {
+  //fisrt child
+  position: relative;
+  width: fit-content;
+  .step {
+    position: relative;
+    background-color: rgb(229, 229, 229);
+    border-radius: 0.5rem;
+    padding: 0.2rem;
+    z-index: 2;
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(100% - 1rem);
+    left: 0.5rem;
+    height: 4px;
+    transform: translateY(-50%);
+    background-color: #000000;
+    z-index: 1;
+  }
+}

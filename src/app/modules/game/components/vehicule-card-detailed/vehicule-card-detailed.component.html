@@ -1,1 +1,18 @@
-<p>vehicule-card-detailed works!</p>
+<div
+  class="card flex-col"
+  [ngClass]="{ available: vehicule | vehiculeAvailable | async }">
+  <div class="flex-row left bottom">
+    <p class="dest">
+      {{ vehicule | vehiculeDestination }}
+    </p>
+    <p class="name">
+      {{ vehicule.name }}
+    </p>
+  </div>
+  <p>leaving in {{ vehicule | vehiculeTimeLeft | async }}</p>
+  <div class="steps flex-row left middle">
+    <div class="step" *ngFor="let step of travel.travelSteps">
+      <p>{{ step.name }}</p>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,33 @@
-<div class="flex-row left top">
-  <div *ngFor="let item of playerService.player.inventory.content" class="item">
-    {{ item.resource.name }} - {{ item.quantity }}
+<div class="flex-col left top main-container">
+  <div class="tabs flex-row left middle">
+    <div
+      *ngFor="let tab of tabs"
+      class="tab"
+      [ngClass]="{
+        unlocked:
+          player.inventory
+          | inventoryTabUnlocked: tab : player.inventory.resourcesTypes.length
+      }"
+      (click)="selectedCategory = tab">
+      <p>
+        {{ tab }}
+      </p>
+    </div>
+  </div>
+  <div class="flex-row left top content">
+    <div
+      *ngFor="
+        let item of player.inventory | inventoryCategory: selectedCategory
+      "
+      class="item flex-col center middle">
+      <app-icon
+        [name]="
+          item.resource.icon ? item.resource.icon : 'default-icon'
+        "></app-icon>
+      <p class="quantity">{{ item.quantity }}</p>
+      <div class="details flex-row center middle">
+        <p>{{ item.resource.name }}</p>
+      </div>
+    </div>
   </div>
 </div>

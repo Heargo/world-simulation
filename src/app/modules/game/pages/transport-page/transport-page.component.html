@@ -2,10 +2,12 @@
   <div class="vehicules flex-col">
     <app-vehicule-card
       *ngFor="let v of vehiculesInBurg$ | async"
+      (click)="selectedVehicule = v"
       [vehicule]="v"></app-vehicule-card>
   </div>
-  <div class="details flex-col">
-    <app-vehicule-card-detailed></app-vehicule-card-detailed>
+  <div class="details flex-col" *ngIf="selectedVehicule">
+    <app-vehicule-card-detailed
+      [vehicule]="selectedVehicule"></app-vehicule-card-detailed>
     <app-transport-options class="options"></app-transport-options>
   </div>
 </div>

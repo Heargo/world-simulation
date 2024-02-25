@@ -14,6 +14,7 @@ import { RAW_RESOURCES } from '../../data/resources';
 })
 export class TransportPageComponent extends BaseAppComponent implements OnInit {
   vehiculesInBurg$!: Observable<Vehicle[]>;
+  selectedVehicule?: Vehicle;
   constructor(
     private readonly worldService: WorldService,
     private readonly transportService: TransportService,

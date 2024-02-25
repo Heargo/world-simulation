@@ -1,4 +1,4 @@
-import { Resource } from './resources';
+import { Resource, ResourceType } from './resources';
 
 export interface InventoryElement {
   resource: Resource;
@@ -7,8 +7,15 @@ export interface InventoryElement {
 
 export class Inventory {
   content: InventoryElement[];
+  resourcesTypes: ResourceType[];
   constructor(content: InventoryElement[] = []) {
     this.content = content;
+    this.resourcesTypes = [];
+    for (const el of content) {
+      if (!this.resourcesTypes.includes(el.resource.type)) {
+        this.resourcesTypes.push(el.resource.type);
+      }
+    }
   }
 
   add(resource: Resource, quantity: number): void {
@@ -18,6 +25,10 @@ export class Inventory {
     } else {
       this.content.push({ resource, quantity });
     }
+    //update resources types
+    if (!this.resourcesTypes.includes(resource.type)) {
+      this.resourcesTypes.push(resource.type);
+    }
   }
 
   remove(resource: Resource, quantity: number): void {
@@ -26,6 +37,15 @@ export class Inventory {
       element.quantity -= quantity;
       if (element.quantity <= 0) {
         this.content = this.content.filter(el => el.resource !== resource);
+        //update resources types if all resources of this type are removed
+        if (
+          this.content.filter(el => el.resource.type === resource.type)
+            .length === 0
+        ) {
+          this.resourcesTypes = this.resourcesTypes.filter(
+            el => el !== resource.type
+          );
+        }
       }
     }
   }

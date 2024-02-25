@@ -3,6 +3,12 @@ import { Inventory } from './inventory';
 import { Resource } from './resources';
 import { Path } from './transportation-grid';
 
+export interface TravelDetails {
+  travelSteps: Burg[];
+  travelTime: number;
+  travelCost: number;
+}
+
 export interface TimePeriodicity {
   burg: Burg;
   periodicityInMiliseconds: number;
@@ -67,11 +73,11 @@ export class Vehicle {
     });
   }
 
-  getCost(depart: Burg): number {
+  getCost(depart: Burg, travelPath: Path): number {
     let currentStep = this.getStep(depart);
 
-    let alreadyTravelled = this.travelPath.stepsCumulativeLength[currentStep];
-    let remainingPath = this.travelPath.length - alreadyTravelled;
+    let alreadyTravelled = travelPath.stepsCumulativeLength[currentStep];
+    let remainingPath = travelPath.length - alreadyTravelled;
 
     return remainingPath * this.costPerDistanceUnit;
   }
@@ -164,6 +170,54 @@ export class Vehicle {
 
   getAvailableSpace(): number {
     return this.capacity - this.inventory.getTotalSize();
+  }
+
+  getPathInDestinationOrder(currentBurg: Burg): Path {
+    let dest = this.getDestination(currentBurg);
+
+    //flip the path if the destination is the first step
+    if (this.travelPath.steps[0] === dest) {
+      return this.revertTravelPath();
+    } else {
+      return this.travelPath;
+    }
+  }
+
+  revertTravelPath(): Path {
+    let newPath: Path = {
+      steps: this.travelPath.steps.reverse(),
+      stepsCumulativeLength: this.travelPath.stepsCumulativeLength,
+      length: this.travelPath.length,
+    };
+    //reverse cumulative length
+    let reversedCumulativeLength = newPath.stepsCumulativeLength.map((l, i) => {
+      return newPath.length - l;
+    });
+
+    newPath.stepsCumulativeLength = reversedCumulativeLength;
+
+    return newPath;
+  }
+
+  getTravelDetails(currentBurg: Burg): TravelDetails {
+    let path = this.getPathInDestinationOrder(currentBurg);
+    let travelSteps = path.steps.filter(s => s instanceof Burg) as Burg[];
+    let currentIndex = travelSteps.findIndex(b => b.id === currentBurg.id);
+    travelSteps = travelSteps.slice(currentIndex);
+
+    let timeUntilDestination = this.getTimeUntilArrival(
+      travelSteps[travelSteps.length - 1]
+    );
+    let timeUntilDeparture = this.getTimeUntilDeparture(currentBurg);
+    let travelTime = timeUntilDestination - timeUntilDeparture;
+
+    let travelCost = this.getCost(currentBurg, path);
+
+    return {
+      travelSteps,
+      travelTime,
+      travelCost,
+    };
   }
 }
 

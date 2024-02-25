@@ -20,6 +20,8 @@ import { InventoryPageComponent } from './pages/inventory-page/inventory-page.co
 import { GameComponent } from './game.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
+import { InventoryCategoryPipe } from './pipes/inventory-category.pipe';
+import { InventoryTabUnlockedPipe } from './pipes/inventory-tab-unlocked.pipe';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { SideMenuComponent } from './components/side-menu/side-menu.component';
     JobPageComponent,
     HarvestSpeed,
     CanHarvestPipe,
+    InventoryCategoryPipe,
+    InventoryTabUnlockedPipe,
     ResourceCardComponent,
     InventoryPageComponent,
   ],

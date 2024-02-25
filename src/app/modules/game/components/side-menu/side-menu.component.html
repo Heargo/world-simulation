@@ -1,6 +1,11 @@
 <div class="container flex-col center top">
   <div *ngIf="!loadingService.loadComplete">no game loaded</div>
   <div class="w-100 flex-col" *ngIf="loadingService.loadComplete">
+    <!-- Current burg card -->
+    <app-burg-card
+      [burg]="worldService.currentBurg"
+      [player]="playerService.player">
+    </app-burg-card>
     <!-- Transports -->
     <div
       class="gameplayCard w-100 flex-row middle left"

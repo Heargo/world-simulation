@@ -1,0 +1,50 @@
+.item {
+  position: relative;
+  aspect-ratio: 1/1;
+  width: 3rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+
+  .quantity {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #000000;
+    color: white;
+    padding: 0.2rem;
+    border-radius: 0.5rem;
+  }
+  .details {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgb(199, 199, 199);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    width: calc(100% - 1rem);
+    transform: translateY(calc(-100% - 0.2rem));
+    display: none;
+  }
+
+  &:hover {
+    .details {
+      display: block;
+    }
+  }
+}
+
+.tabs {
+  .tab {
+    display: none;
+    padding: 0.5rem;
+    background-color: white;
+    border-radius: 0.2rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    &.unlocked {
+      display: block;
+    }
+  }
+}

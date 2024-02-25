@@ -1,4 +1,5 @@
 <img
   [src]="'assets/icons/' + name + '.svg'"
+  onError="this.src='assets/icons/default-icon.svg'"
   [alt]="name"
   [ngStyle]="{ width: size }" />
