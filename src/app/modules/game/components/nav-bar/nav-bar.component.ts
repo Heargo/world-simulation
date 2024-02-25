@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth/auth.service';
-import { BaseAppComponent } from '../base-app/base-app.component';
-import { LoadingService } from '../../../modules/game/services/loading.service';
-import { PlayerService } from '../../../modules/game/services/player.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
+import { BaseAppComponent } from '../../../../core/components/base-app/base-app.component';
+import { LoadingService } from '../../services/loading.service';
+import { PlayerService } from '../../services/player.service';
 
 @Component({
   selector: 'app-nav-bar',

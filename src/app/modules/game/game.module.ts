@@ -17,9 +17,15 @@ import { HarvestSpeed } from './pipes/harvest-speed.pipe';
 import { CanHarvestPipe } from './pipes/can-harvest.pipe';
 import { ResourceCardComponent } from './components/resource-card/resource-card.component';
 import { InventoryPageComponent } from './pages/inventory-page/inventory-page.component';
+import { GameComponent } from './game.component';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { SideMenuComponent } from './components/side-menu/side-menu.component';
 
 @NgModule({
   declarations: [
+    GameComponent,
+    NavBarComponent,
+    SideMenuComponent,
     LoadingPageComponent,
     MapComponent,
     BurgCardComponent,
