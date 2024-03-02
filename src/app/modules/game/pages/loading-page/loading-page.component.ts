@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { WorldService } from '../../services/world.service';
 import { firstValueFrom } from 'rxjs';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Router } from '@angular/router';
-import { TransportService } from '../../services/transports.service';
 import { LoadingService } from '../../services/loading.service';
+import { ToastLevel } from '../../../../core/models/toast-level';
 
 @Component({
   selector: 'app-loading-page',
@@ -18,7 +17,9 @@ export class LoadingPageComponent implements OnInit {
     private readonly router: Router
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {}
+
+  async onStartGame(): Promise<void> {
     this.toasts.ShowLoading('Loading world', true);
     await firstValueFrom(
       this.loadingService.loadWorld('assets/maps/default-map.json')
@@ -26,6 +27,23 @@ export class LoadingPageComponent implements OnInit {
     await firstValueFrom(
       this.loadingService.loadSvgMap('assets/maps/default-map.svg')
     );
+  }
+
+  async onLoadFromSave(): Promise<void> {
+    this.toasts.Show('Not implemented yet', ToastLevel.Warning);
+  }
+
+  async onLoadFromLocal(): Promise<void> {
+    this.toasts.ShowLoading('Loading world');
+    let game = this.loadingService.getLocalSave();
+    if (game) {
+      this.loadingService.loadGame(game);
+      this.toasts.HideLoading();
+      this.router.navigate(['game/transport/road']);
+    } else {
+      this.toasts.HideLoading();
+      this.toasts.Show('No local save found', ToastLevel.Error);
+    }
   }
 
   async onSvgRendered() {

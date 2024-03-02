@@ -1,9 +1,19 @@
 <div class="main-container">
+  <div class="flex-row center middle h-100">
+    <button class="card-clickable" (click)="onStartGame()">Start a game</button>
+    <button class="card-clickable" (click)="onLoadFromLocal()">
+      Load from localStorage
+    </button>
+    <label class="card-clickable" for="file" (click)="onLoadFromSave()"
+      >Load from save</label
+    >
+    <input id="file" type="file" />
+  </div>
+
   <div
     *ngIf="!loadingService.loadComplete"
     appMutationObserverDirective
     (innerHtmlRendered)="onSvgRendered()"
     id="svg-map-container"
     [innerHTML]="loadingService.svgMapDisplay"></div>
-  <p>{{ 'help.title' | translate }}</p>
 </div>

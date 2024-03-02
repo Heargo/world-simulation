@@ -1,7 +1,13 @@
 <div class="flex-row w-full h-full no-gap">
-  <app-side-menu></app-side-menu>
+  <app-side-menu
+    *ngIf="
+      this.route.snapshot.firstChild?.routeConfig?.path !== 'loading'
+    "></app-side-menu>
   <div class="fill-remaining">
-    <app-nav-bar></app-nav-bar>
+    <app-nav-bar
+      *ngIf="
+        this.route.snapshot.firstChild?.routeConfig?.path !== 'loading'
+      "></app-nav-bar>
     <router-outlet></router-outlet>
   </div>
 </div>

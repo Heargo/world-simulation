@@ -13,6 +13,8 @@ import {
 } from '../models/transportation-grid';
 import { WorldService } from './world.service';
 import { TransportService } from './transports.service';
+import { Game } from '../models/game';
+import { PlayerService } from './player.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +36,8 @@ export class LoadingService {
     private readonly http: HttpClient,
     private readonly domSanitize: DomSanitizer,
     private readonly worldService: WorldService,
-    private readonly transportService: TransportService
+    private readonly transportService: TransportService,
+    private readonly playerService: PlayerService
   ) {}
 
   private loadWorldRaw(url: string): Observable<WorldRaw | null> {
@@ -199,5 +202,55 @@ export class LoadingService {
     this.transportService.initCarriages(5); //need to be called after worldService.load
     this.worldService.currentBurg = this.world.mapData.burgs[294];
     this.loadComplete = true;
+  }
+
+  getSave(): Game {
+    let save: Game = {
+      world: this.worldService.world,
+      ground_grid: this.worldService.ground_grid,
+      sea_grid: this.worldService.sea_grid,
+      currentBurg: this.worldService.currentBurg,
+      player: this.playerService.player,
+      transports: this.transportService.save(),
+      saveTime: Date.now(),
+    };
+    return save;
+  }
+
+  saveGame() {
+    let save: Game = this.getSave();
+    localStorage.setItem('localSave', JSON.stringify(save));
+  }
+
+  downloadSave() {
+    let save: Game = this.getSave();
+    let blob = new Blob([JSON.stringify(save)], {
+      type: 'application/json',
+    });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'save.json';
+    a.click();
+    a.remove();
+  }
+
+  loadGame(game: Game) {
+    this.worldService.load(
+      game.world,
+      game.ground_grid,
+      game.sea_grid,
+      game.currentBurg
+    );
+    this.transportService.load(game.transports);
+    this.playerService.load(game.player);
+  }
+
+  getLocalSave(): Game | null {
+    let save = localStorage.getItem('localSave');
+    if (save) {
+      return JSON.parse(save);
+    }
+    return null;
   }
 }

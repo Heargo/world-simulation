@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BiomesData, State, World } from '../models/world';
 import { DiplomacyEnum } from '../models/world-raw';
-import { Path, TransportationGrid } from '../models/transportation-grid';
+import { TransportationGrid } from '../models/transportation-grid';
 import { Burg } from '../models/burg';
 
 @Injectable({
@@ -16,11 +16,15 @@ export class WorldService {
   load(
     world: World,
     ground: TransportationGrid,
-    sea: TransportationGrid
+    sea: TransportationGrid,
+    currentBurg?: Burg
   ): void {
     this.world = world;
     this.ground_grid = ground;
     this.sea_grid = sea;
+    if (currentBurg) {
+      this.currentBurg = currentBurg;
+    }
   }
 
   setCurrentBurg(burg: Burg): void {
@@ -41,18 +45,6 @@ export class WorldService {
 
   getBurgState(burg: Burg): State {
     return this.world.mapData.states[burg.state!];
-  }
-
-  getPathBetweenBurgs(burgName1: string, burgName2: string): Path | undefined {
-    let burg1 = this.getBurgByName(burgName1);
-    let burg2 = this.getBurgByName(burgName2);
-    let path: Path;
-    if (burg1 && burg2) {
-      let b1 = this.ground_grid.getNodeClosestTo(burg1.x, burg1.y);
-      let b2 = this.ground_grid.getNodeClosestTo(burg2.x, burg2.y);
-      path = this.ground_grid.shortestPath(b1.id, b2.id);
-    }
-    return path!;
   }
 
   getBurgsByAttractivity(burgId: number): {
