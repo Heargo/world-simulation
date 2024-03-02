@@ -15,6 +15,7 @@ import { WorldService } from './world.service';
 import { TransportService } from './transports.service';
 import { Game } from '../models/game';
 import { PlayerService } from './player.service';
+import { invoke } from '@tauri-apps/api';
 
 @Injectable({
   providedIn: 'root',
@@ -220,6 +221,7 @@ export class LoadingService {
   saveGame() {
     let save: Game = this.getSave();
     localStorage.setItem('localSave', JSON.stringify(save));
+    invoke('greet', { name: 'hugo' }).then(res => console.log(res));
   }
 
   downloadSave() {
