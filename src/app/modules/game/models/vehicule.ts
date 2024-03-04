@@ -74,6 +74,18 @@ export class Vehicle {
   static fromJSON(data: Object) {
     let date: Date = new Date((data as any).firstInit);
     (data as any).firstInit = date;
+
+    (data as any).travelPath.steps = (data as any).travelPath.steps.map(
+      (s: any) => {
+        //if s is a number, it's a burg id
+        if (typeof s === 'number') {
+          return s;
+        } else {
+          return Burg.fromJSON(s);
+        }
+      }
+    );
+
     return Object.assign(new this(), data);
   }
 
@@ -81,7 +93,9 @@ export class Vehicle {
     return this.travelPath.steps.findIndex(s => {
       if (s instanceof Burg) {
         return s.id === b.id;
-      } else return false;
+      } else {
+        return false;
+      }
     });
   }
 

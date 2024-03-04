@@ -93,7 +93,6 @@ export class TransportService {
   }
 
   getCarriagesByBurg(burg: Burg): Vehicle[] {
-    console.log('getCarriagesByBurg', burg, this.carriages[burg.id]);
     return this.carriages[burg.id].sort((a, b) => {
       let aVal = a.getTimeUntilDeparture(burg);
       let bVal = b.getTimeUntilDeparture(burg);
