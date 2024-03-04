@@ -17,32 +17,36 @@ export interface TimePeriodicity {
 export class Vehicle {
   static VEHICLE_ID = 0;
 
-  id: number;
-  type: VehicleType;
-  name: string;
-  speed: number;
-  capacity: number;
-  costPerDistanceUnit: number;
-  inventory: Inventory;
-  stopDuration: number; //in seconds
-  travelPath: Path;
-  firstInit: Date;
+  id!: number;
+  type!: VehicleType;
+  name!: string;
+  origin!: number; //burg id
+  speed!: number;
+  capacity!: number;
+  costPerDistanceUnit!: number;
+  inventory!: Inventory;
+  stopDuration!: number; //in seconds
+  travelPath!: Path;
+  firstInit!: Date;
   nbBurgsInPath: number = 0;
   burgsInPath: Burg[] = [];
   timePeriodicity: TimePeriodicity[] = [];
-  cycle: number;
+  cycle!: number;
 
   private now: Date = new Date();
 
   constructor(
-    type: VehicleType,
-    name: string,
-    speed: number,
-    capacity: number,
-    costPerKm: number,
-    travelPath: Path,
+    type?: VehicleType,
+    name?: string,
+    speed?: number,
+    capacity?: number,
+    costPerKm?: number,
+    travelPath?: Path,
     stopDuration: number = 300
   ) {
+    if (!type || !name || !speed || !capacity || !costPerKm || !travelPath) {
+      return;
+    }
     this.id = Vehicle.VEHICLE_ID++;
     this.type = type;
     this.name = name;
@@ -59,10 +63,18 @@ export class Vehicle {
       s => s instanceof Burg
     ) as Burg[];
 
+    this.origin = this.burgsInPath[0].id;
+
     this.cycle =
       (2 * (this.travelPath.length / this.speed) +
         (2 * this.nbBurgsInPath - 2) * this.stopDuration) *
       1000;
+  }
+
+  static fromJSON(data: Object) {
+    let date: Date = new Date((data as any).firstInit);
+    (data as any).firstInit = date;
+    return Object.assign(new this(), data);
   }
 
   getStep(b: Burg): number {

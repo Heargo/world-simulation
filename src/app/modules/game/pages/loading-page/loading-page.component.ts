@@ -35,9 +35,13 @@ export class LoadingPageComponent implements OnInit {
 
   async onLoadFromLocal(): Promise<void> {
     this.toasts.ShowLoading('Loading world');
-    let game = this.loadingService.getLocalSave();
+    const saves = await this.loadingService.getLocalSaves();
+    console.log('saves', saves);
+    let game = saves[0];
+    console.log('game', game);
     if (game) {
       this.loadingService.loadGame(game);
+      this.loadingService.loadComplete = true;
       this.toasts.HideLoading();
       this.router.navigate(['game/transport/road']);
     } else {

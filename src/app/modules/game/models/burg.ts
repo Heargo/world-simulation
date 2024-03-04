@@ -16,26 +16,27 @@ export enum BurgType {
 
 export class Burg {
   //Foreign keys
-  id: number;
+  id!: number;
   cell?: number;
   state?: number;
   culture?: number;
   feature?: number;
   //Data
-  name: string;
-  capital: boolean;
-  x: number;
-  y: number;
-  population: number;
-  cityAttractivity: number;
-  type: BurgType;
-  startingInfrastructure: Infrastructure[];
-  buildedInfrastructure: Infrastructure[];
-  availableResourcesTypes: ResourceType[];
-  availableJobsTypes: JobType[];
-  resourceTypeFactor: { [key: string]: number };
+  name!: string;
+  capital!: boolean;
+  x!: number;
+  y!: number;
+  population!: number;
+  cityAttractivity!: number;
+  type!: BurgType;
+  startingInfrastructure!: Infrastructure[];
+  buildedInfrastructure!: Infrastructure[];
+  availableResourcesTypes!: ResourceType[];
+  availableJobsTypes!: JobType[];
+  resourceTypeFactor!: { [key: string]: number };
 
-  constructor(data: any) {
+  constructor(data?: any) {
+    if (!data) return;
     this.cell = data.cell;
     this.x = data.x;
     this.y = data.y;
@@ -53,6 +54,26 @@ export class Burg {
     this.availableJobsTypes = [];
     this.cityAttractivity = 0;
     this.resourceTypeFactor = {};
+  }
+
+  static fromJSON(data: Object) {
+    const startingInfrastructure: Infrastructure[] = [];
+    if ((data as any).startingInfrastructure) {
+      for (const infra of (data as any).startingInfrastructure as any) {
+        startingInfrastructure.push(new Infrastructure(infra));
+      }
+    }
+    (data as any).startingInfrastructure = startingInfrastructure;
+
+    const buildedInfrastructure: Infrastructure[] = [];
+    if ((data as any).buildedInfrastructure) {
+      for (const infra of (data as any).buildedInfrastructure as any) {
+        buildedInfrastructure.push(new Infrastructure(infra));
+      }
+    }
+    (data as any).buildedInfrastructure = buildedInfrastructure;
+
+    return Object.assign(new this(), data);
   }
 
   generateStartingInfrastructure(data: any) {

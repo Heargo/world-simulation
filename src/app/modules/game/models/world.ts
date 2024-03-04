@@ -7,22 +7,28 @@ import { ResourceType } from './resources';
 import { WorldRaw } from './world-raw';
 
 export class World {
-  info: Info;
-  mapCoordinates: MapCoordinates;
-  mapData: MapData;
-  biomesData: BiomesData[];
-  notes: Note[];
-  nameBases: NameBase[];
+  info!: Info;
+  mapCoordinates!: MapCoordinates;
+  mapData!: MapData;
+  biomesData!: BiomesData[];
+  notes!: Note[];
+  nameBases!: NameBase[];
 
-  constructor(raw: WorldRaw) {
-    let world: any = {};
-    world = this.convertWithProperId(raw);
-    this.info = world.info;
-    this.mapCoordinates = world.mapCoordinates;
-    this.biomesData = this.convertBiomeData(world.biomesData);
-    this.mapData = this.convertMapData(world.pack);
-    this.notes = world.notes;
-    this.nameBases = world.nameBases;
+  constructor(raw?: WorldRaw) {
+    if (raw) {
+      let world: any = {};
+      world = this.convertWithProperId(raw);
+      this.info = world.info;
+      this.mapCoordinates = world.mapCoordinates;
+      this.biomesData = this.convertBiomeData(world.biomesData);
+      this.mapData = this.convertMapData(world.pack);
+      this.notes = world.notes;
+      this.nameBases = world.nameBases;
+    }
+  }
+
+  static fromJSON(data: Object): World {
+    return Object.assign(new this(), data);
   }
 
   private convertWithProperId(raw: any): any {

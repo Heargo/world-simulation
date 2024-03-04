@@ -18,6 +18,21 @@ export class Inventory {
     }
   }
 
+  static fromJSON(data: Object) {
+    let content: InventoryElement[] = [];
+    if ((data as any).content) {
+      for (const el of (data as any).content as any) {
+        content.push({
+          resource: Resource.fromJSON(el.resource),
+          quantity: el.quantity,
+        });
+      }
+    }
+    (data as any).content = content;
+
+    return Object.assign(new this(), data);
+  }
+
   add(resource: Resource, quantity: number): void {
     const element = this.content.find(el => el.resource === resource);
     if (element) {

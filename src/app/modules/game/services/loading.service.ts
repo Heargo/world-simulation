@@ -13,8 +13,13 @@ import {
 } from '../models/transportation-grid';
 import { WorldService } from './world.service';
 import { TransportService } from './transports.service';
-import { Game } from '../models/game';
+import { Game, TransportData } from '../models/game';
 import { PlayerService } from './player.service';
+import { DatabaseService } from './database.service';
+import { Player } from '../models/player';
+import { Inventory } from '../models/inventory';
+import { Vehicle, VehicleType } from '../models/vehicule';
+import { Job } from '../models/jobs';
 
 @Injectable({
   providedIn: 'root',
@@ -32,12 +37,15 @@ export class LoadingService {
 
   currentBurg!: Burg;
 
+  db!: IDBDatabase;
+
   constructor(
     private readonly http: HttpClient,
     private readonly domSanitize: DomSanitizer,
     private readonly worldService: WorldService,
     private readonly transportService: TransportService,
-    private readonly playerService: PlayerService
+    private readonly playerService: PlayerService,
+    private readonly dbService: DatabaseService
   ) {}
 
   private loadWorldRaw(url: string): Observable<WorldRaw | null> {
@@ -178,7 +186,7 @@ export class LoadingService {
           const pointObj = new DOMPoint(point.x, point.y);
           isPointInPath = p.isPointInStroke(pointObj);
         } catch (e) {
-          console.log('error', e);
+          console.error('error while parsing the svg', e);
           // Fallback for browsers that don't support DOMPoint as an argument
           const pointObj = svg.createSVGPoint();
           pointObj.x = point.x;
@@ -218,8 +226,10 @@ export class LoadingService {
   }
 
   saveGame() {
-    let save: Game = this.getSave();
-    localStorage.setItem('localSave', JSON.stringify(save));
+    const save: Game = this.getSave();
+    const jsonSave = JSON.parse(JSON.stringify(save));
+    console.log('saving game', jsonSave);
+    this.dbService.save('games', jsonSave);
   }
 
   downloadSave() {
@@ -236,21 +246,89 @@ export class LoadingService {
   }
 
   loadGame(game: Game) {
+    console.log('loading game', game);
     this.worldService.load(
       game.world,
       game.ground_grid,
       game.sea_grid,
       game.currentBurg
     );
+    console.log('world successfully loaded');
     this.transportService.load(game.transports);
+    console.log('transports successfully loaded');
     this.playerService.load(game.player);
+    console.log('player successfully loaded');
   }
 
-  getLocalSave(): Game | null {
-    let save = localStorage.getItem('localSave');
-    if (save) {
-      return JSON.parse(save);
+  async getLocalSave(id: number): Promise<Game> {
+    const save = await this.dbService.load<Game>('games', id);
+    return this.jsonToGame(save);
+  }
+
+  async getLocalSaves(): Promise<Game[]> {
+    const saves = await this.dbService.list<Game>('games');
+    const games: Game[] = [];
+    saves.forEach(save => {
+      games.push(this.jsonToGame(save));
+    });
+
+    return games;
+  }
+
+  jsonToGame(json: Game): Game {
+    console.log('json', json);
+    const w = World.fromJSON(json.world);
+    // console.log('w', w);
+    const ground_grid = TransportationGrid.fromJSON(json.ground_grid);
+    // console.log('ground_grid', ground_grid);
+    const sea_grid = TransportationGrid.fromJSON(json.sea_grid);
+    // console.log('sea_grid', sea_grid);
+    const currentBurg = Burg.fromJSON(json.currentBurg);
+    // console.log('currentBurg', currentBurg);
+    const playerInventory = Inventory.fromJSON(json.player.inventory);
+    const jobs: Job[] = [];
+    for (let j of json.player.jobs) {
+      jobs.push(Job.fromJSON(j));
     }
-    return null;
+    // console.log('playerInventory', playerInventory);
+    const player = new Player(playerInventory, jobs, json.player.etat);
+    // console.log('player', player);
+
+    let transportData: TransportData = {
+      nbCarriages: json.transports.nbCarriages,
+      nbShips: json.transports.nbShips,
+      carriages: {},
+      ships: {},
+    };
+    // console.log('transportData', transportData);
+
+    for (let start of Object.keys(json.transports.carriages)) {
+      for (let v of json.transports.carriages[Number(start)]) {
+        let vehicle = Vehicle.fromJSON(v);
+        if ((vehicle.type as VehicleType) == VehicleType.Carriage) {
+          transportData.carriages[vehicle.origin] =
+            transportData.carriages[vehicle.origin] || [];
+          transportData.carriages[vehicle.origin].push(vehicle);
+        } else if ((vehicle.type as VehicleType) == VehicleType.Ship) {
+          transportData.ships[vehicle.origin] =
+            transportData.ships[vehicle.origin] || [];
+          transportData.ships[vehicle.origin].push(vehicle);
+        } else {
+          console.warn('fuck', vehicle.type, v);
+        }
+      }
+    }
+
+    console.log('transportData', transportData);
+
+    return {
+      world: w,
+      ground_grid: ground_grid,
+      sea_grid: sea_grid,
+      currentBurg: currentBurg,
+      player: player,
+      transports: transportData,
+      saveTime: json.saveTime,
+    };
   }
 }

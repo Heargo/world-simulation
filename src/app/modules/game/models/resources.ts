@@ -40,6 +40,10 @@ export class Resource {
     if (data.passive) this.passive = data.passive;
     else this.passive = false;
   }
+
+  static fromJSON(data: Object) {
+    return new Resource(data as ResourceData);
+  }
 }
 
 /**

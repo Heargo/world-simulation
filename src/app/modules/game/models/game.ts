@@ -17,7 +17,6 @@ export interface Game {
 export interface TransportData {
   nbCarriages: number;
   nbShips: number;
-  allCarriages: Vehicle[];
   carriages: { [key: number]: Vehicle[] };
   ships: { [key: number]: Vehicle[] };
 }

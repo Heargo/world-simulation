@@ -28,13 +28,19 @@ export class TransportationGrid {
     prev: number[][];
     reconstructPath: (start: number, end: number) => number[];
   };
+
   public minDistancesMatrix: number[][] = [];
-  constructor(
-    private nodes: GridNode[] = [],
-    private edges: Edge[] = []
-  ) {
+
+  private nodes: GridNode[];
+  private edges: Edge[];
+
+  constructor(nodes: GridNode[] = [], edges: Edge[] = []) {
     this.edges = edges;
     this.nodes = nodes;
+  }
+
+  static fromJSON(data: Object) {
+    return Object.assign(new this(), data);
   }
 
   addNode(x: number, y: number, relatedBurg?: Burg) {

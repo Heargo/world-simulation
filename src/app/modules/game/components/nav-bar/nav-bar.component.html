@@ -25,6 +25,9 @@
       </div>
     </div>
   </div>
+  <div *ngIf="loadingService.loadComplete">
+    <button class="primary" (click)="saveGame()">Save</button>
+  </div>
 
   <!-- end -->
   <div class="flex-row middle right" *ngIf="!loadingService.loadComplete">

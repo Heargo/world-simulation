@@ -13,8 +13,6 @@ export enum JobType {
 }
 
 export class Job {
-  static JOB_ID = 0;
-
   type: JobType;
   currentLevel: number;
   maxLevel: number;
@@ -40,6 +38,17 @@ export class Job {
 
     if (nextLevelExperience) this.nextLevelExperience = nextLevelExperience;
     else this.nextLevelExperience = this.calculateExperienceToNextLevel();
+  }
+
+  static fromJSON(data: any) {
+    return new this(
+      data.type,
+      data.currentLevel,
+      data.maxLevel,
+      data.maxHarvestingValue,
+      data.currentExperience,
+      data.nextLevelExperience
+    );
   }
 
   levelUp() {

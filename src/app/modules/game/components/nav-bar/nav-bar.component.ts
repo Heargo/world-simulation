@@ -19,4 +19,8 @@ export class NavBarComponent extends BaseAppComponent {
   ) {
     super();
   }
+
+  saveGame() {
+    this.loadingService.saveGame();
+  }
 }

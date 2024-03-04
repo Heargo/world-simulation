@@ -12,23 +12,22 @@ export class TransportService {
   nbCarriages: number = 0;
   nbShips: number = 0;
   allCarriages: Vehicle[] = [];
-  carriages: { [key: number]: Vehicle[] } = [];
-  ships: { [key: number]: Vehicle[] } = [];
+  carriages: { [key: number]: Vehicle[] } = {};
+  ships: { [key: number]: Vehicle[] } = {};
   constructor(private readonly worldService: WorldService) {}
 
   load(data: TransportData): void {
     this.nbCarriages = data.nbCarriages;
     this.nbShips = data.nbShips;
-    this.allCarriages = data.allCarriages;
     this.carriages = data.carriages;
     this.ships = data.ships;
+    console.log('transportService loaded', data, 'this', this);
   }
 
   save(): TransportData {
     return {
       nbCarriages: this.nbCarriages,
       nbShips: this.nbShips,
-      allCarriages: this.allCarriages,
       carriages: this.carriages,
       ships: this.ships,
     };
@@ -94,6 +93,7 @@ export class TransportService {
   }
 
   getCarriagesByBurg(burg: Burg): Vehicle[] {
+    console.log('getCarriagesByBurg', burg, this.carriages[burg.id]);
     return this.carriages[burg.id].sort((a, b) => {
       let aVal = a.getTimeUntilDeparture(burg);
       let bVal = b.getTimeUntilDeparture(burg);
