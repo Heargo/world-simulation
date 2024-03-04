@@ -1,13 +1,27 @@
 <div class="main-container">
-  <div class="flex-row center middle h-100">
-    <button class="card-clickable" (click)="onStartGame()">Start a game</button>
-    <button class="card-clickable" (click)="onLoadFromLocal()">
-      Load from localStorage
-    </button>
-    <label class="card-clickable" for="file" (click)="onLoadFromSave()"
-      >Load from save</label
-    >
-    <input id="file" type="file" />
+  <div class="flex-col center middle h-100">
+    <div class="options flex-row center middle">
+      <button class="card-clickable" (click)="onStartGame()">
+        Start a game
+      </button>
+      <button class="card-clickable" (click)="getLocalSaves()">
+        Load from localStorage
+      </button>
+      <label class="card-clickable" for="file" (click)="onLoadFromSave()"
+        >Load from save</label
+      >
+      <input id="file" type="file" />
+    </div>
+    <div *ngIf="loadingDetails" class="flex-col center middle w-100 h-100">
+      <p
+        *ngFor="let save of localSaves"
+        class="card-clickable w-100"
+        (click)="onLoadGame(save)">
+        {{ save.saveName ? save.saveName : ('untitled' | translate) }} -
+        {{ save.world.info.mapName }} - {{ save.saveTime | date: 'short' }}
+      </p>
+      <div></div>
+    </div>
   </div>
 
   <div

@@ -22,6 +22,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
 import { InventoryCategoryPipe } from './pipes/inventory-category.pipe';
 import { InventoryTabUnlockedPipe } from './pipes/inventory-tab-unlocked.pipe';
+import { SaveModalComponent } from './components/modal/save-modal/save-modal.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { InventoryTabUnlockedPipe } from './pipes/inventory-tab-unlocked.pipe';
     InventoryTabUnlockedPipe,
     ResourceCardComponent,
     InventoryPageComponent,
+    SaveModalComponent,
   ],
   imports: [CommonModule, GameRoutingModule, SharedModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

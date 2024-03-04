@@ -3,6 +3,9 @@ import { AuthService } from '../../../../core/services/auth/auth.service';
 import { BaseAppComponent } from '../../../../core/components/base-app/base-app.component';
 import { LoadingService } from '../../services/loading.service';
 import { PlayerService } from '../../services/player.service';
+import { ModalService } from '../../../../core/services/modal/modal.service';
+import { SaveModalComponent } from '../modal/save-modal/save-modal.component';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-nav-bar',
@@ -15,12 +18,25 @@ export class NavBarComponent extends BaseAppComponent {
   constructor(
     public readonly authService: AuthService,
     public readonly playerService: PlayerService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    private readonly modalService: ModalService
   ) {
     super();
   }
 
   saveGame() {
-    this.loadingService.saveGame();
+    this.modalService
+      .open(SaveModalComponent, {
+        title: 'Save Game',
+        message:
+          'Do you want to save the game? Please enter a name for the save.',
+        confirmText: 'Save',
+      })
+      .pipe(take(1))
+      .subscribe(event => {
+        if (event.success) {
+          this.loadingService.saveGame(event.data);
+        }
+      });
   }
 }

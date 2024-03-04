@@ -12,6 +12,7 @@ export interface Game {
   player: Player;
   transports: TransportData;
   saveTime: number;
+  saveName?: string;
 }
 
 export interface TransportData {

@@ -212,7 +212,7 @@ export class LoadingService {
     this.loadComplete = true;
   }
 
-  getSave(): Game {
+  getSave(name?: string): Game {
     let save: Game = {
       world: this.worldService.world,
       ground_grid: this.worldService.ground_grid,
@@ -221,14 +221,14 @@ export class LoadingService {
       player: this.playerService.player,
       transports: this.transportService.save(),
       saveTime: Date.now(),
+      saveName: name,
     };
     return save;
   }
 
-  saveGame() {
-    const save: Game = this.getSave();
+  saveGame(name?: string) {
+    const save: Game = this.getSave(name);
     const jsonSave = JSON.parse(JSON.stringify(save));
-    console.log('saving game', jsonSave);
     this.dbService.save('games', jsonSave);
   }
 
@@ -246,18 +246,14 @@ export class LoadingService {
   }
 
   loadGame(game: Game) {
-    console.log('loading game', game);
     this.worldService.load(
       game.world,
       game.ground_grid,
       game.sea_grid,
       game.currentBurg
     );
-    console.log('world successfully loaded');
     this.transportService.load(game.transports);
-    console.log('transports successfully loaded');
     this.playerService.load(game.player);
-    console.log('player successfully loaded');
   }
 
   async getLocalSave(id: number): Promise<Game> {
@@ -276,23 +272,16 @@ export class LoadingService {
   }
 
   jsonToGame(json: Game): Game {
-    console.log('json', json);
     const w = World.fromJSON(json.world);
-    // console.log('w', w);
     const ground_grid = TransportationGrid.fromJSON(json.ground_grid);
-    // console.log('ground_grid', ground_grid);
     const sea_grid = TransportationGrid.fromJSON(json.sea_grid);
-    // console.log('sea_grid', sea_grid);
     const currentBurg = Burg.fromJSON(json.currentBurg);
-    // console.log('currentBurg', currentBurg);
     const playerInventory = Inventory.fromJSON(json.player.inventory);
     const jobs: Job[] = [];
     for (let j of json.player.jobs) {
       jobs.push(Job.fromJSON(j));
     }
-    // console.log('playerInventory', playerInventory);
     const player = new Player(playerInventory, jobs, json.player.etat);
-    // console.log('player', player);
 
     let transportData: TransportData = {
       nbCarriages: json.transports.nbCarriages,
@@ -300,7 +289,6 @@ export class LoadingService {
       carriages: {},
       ships: {},
     };
-    // console.log('transportData', transportData);
 
     for (let start of Object.keys(json.transports.carriages)) {
       for (let v of json.transports.carriages[Number(start)]) {
@@ -313,13 +301,9 @@ export class LoadingService {
           transportData.ships[vehicle.origin] =
             transportData.ships[vehicle.origin] || [];
           transportData.ships[vehicle.origin].push(vehicle);
-        } else {
-          console.warn('fuck', vehicle.type, v);
         }
       }
     }
-
-    console.log('transportData', transportData);
 
     return {
       world: w,
@@ -329,6 +313,7 @@ export class LoadingService {
       player: player,
       transports: transportData,
       saveTime: json.saveTime,
+      saveName: json.saveName,
     };
   }
 }

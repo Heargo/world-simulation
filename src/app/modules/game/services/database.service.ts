@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { ToastService } from '../../../core/services/toast/toast.service';
+import { ToastLevel } from '../../../core/models/toast-level';
 
 @Injectable({
   providedIn: 'root',
@@ -6,7 +8,7 @@ import { Injectable } from '@angular/core';
 export class DatabaseService {
   db!: IDBDatabase;
 
-  constructor() {
+  constructor(private toastService: ToastService) {
     const request = indexedDB.open('gameDB', 3);
 
     request.onupgradeneeded = event => {
@@ -18,11 +20,9 @@ export class DatabaseService {
 
     request.onsuccess = event => {
       this.db = (event.target as IDBOpenDBRequest).result;
-      console.log('database opened successfully');
     };
 
     request.onerror = function (event) {
-      // Error occurred while opening the database
       console.error('Error occurred while opening the database.');
     };
   }
@@ -32,12 +32,46 @@ export class DatabaseService {
     const objectStore = this.db
       .transaction(store, 'readwrite')
       .objectStore(store);
-    objectStore.add(data);
+
+    const request = objectStore.add(data);
+
+    request.onerror = event => {
+      console.error(
+        'Error occurred while adding data to the database.',
+        request.error
+      );
+      this.toastService.Show(
+        'Error occurred while adding saving data',
+        ToastLevel.Error
+      );
+    };
+
+    request.onsuccess = event => {
+      // Data added successfully
+      console.log('Data added successfully');
+      this.toastService.Show('Data saved successfully', ToastLevel.Success);
+    };
   }
 
-  load<T>(store: string, id: number): T {
-    console.log('loadGame');
-    return {} as T;
+  async load<T>(store: string, id: number): Promise<T> {
+    const objStore = this.db.transaction(store).objectStore(store);
+
+    const r = objStore.get(id);
+
+    //wait for the result (when r.onsuccess is called)
+    return new Promise<T>((resolve, reject) => {
+      r.onsuccess = () => {
+        this.toastService.Show('Data loaded successfully', ToastLevel.Success);
+        resolve(r.result);
+      };
+      r.onerror = () => {
+        this.toastService.Show(
+          'Error occurred while loading data',
+          ToastLevel.Error
+        );
+        reject(r.error);
+      };
+    });
   }
 
   async list<T>(store: string): Promise<T[]> {
@@ -48,9 +82,14 @@ export class DatabaseService {
     //wait for the result (when r.onsuccess is called)
     return new Promise<T[]>((resolve, reject) => {
       r.onsuccess = () => {
+        this.toastService.Show('Data loaded successfully', ToastLevel.Success);
         resolve(r.result);
       };
       r.onerror = () => {
+        this.toastService.Show(
+          'Error occurred while loading data',
+          ToastLevel.Error
+        );
         reject(r.error);
       };
     });
