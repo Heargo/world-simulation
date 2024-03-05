@@ -26,6 +26,25 @@ export class Player {
     this.jobs = jobs;
   }
 
+  static fromJSON(data: any) {
+    const playerInventory = Inventory.fromJSON(data.inventory);
+
+    const jobs: Job[] = [];
+    for (let j of data.jobs) {
+      jobs.push(Job.fromJSON(j));
+    }
+
+    const etat: PlayerEtat = {
+      isInTransit: data.etat.isInTransit,
+      timeLeftInTransit: data.etat.timeLeftInTransit,
+      destinationBurgId: data.etat.destinationBurgId,
+      currentHarvest: Resource.fromJSON(data.etat.currentHarvest),
+      currentJobActive: Job.fromJSON(data.etat.currentJobActive),
+    };
+
+    return new Player(playerInventory, jobs, etat);
+  }
+
   startTransit(destinationBurgId: number, timeLeftInTransit: number): void {
     this.etat.isInTransit = true;
     this.etat.timeLeftInTransit = timeLeftInTransit;

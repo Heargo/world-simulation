@@ -13,13 +13,15 @@ import {
 } from '../models/transportation-grid';
 import { WorldService } from './world.service';
 import { TransportService } from './transports.service';
-import { Game, TransportData } from '../models/game';
+import { Game, OfflineGain, TransportData } from '../models/game';
 import { PlayerService } from './player.service';
 import { DatabaseService } from './database.service';
 import { Player } from '../models/player';
 import { Inventory } from '../models/inventory';
 import { Vehicle, VehicleType } from '../models/vehicule';
 import { Job } from '../models/jobs';
+import { ModalService } from '../../../core/services/modal/modal.service';
+import { OfflineGainsModalComponent } from '../components/modal/offline-gains-modal/offline-gains-modal.component';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +47,8 @@ export class LoadingService {
     private readonly worldService: WorldService,
     private readonly transportService: TransportService,
     private readonly playerService: PlayerService,
-    private readonly dbService: DatabaseService
+    private readonly dbService: DatabaseService,
+    private readonly modalService: ModalService
   ) {}
 
   private loadWorldRaw(url: string): Observable<WorldRaw | null> {
@@ -246,6 +249,7 @@ export class LoadingService {
   }
 
   loadGame(game: Game) {
+    const oldGame = this.jsonToGame(JSON.parse(JSON.stringify(game)));
     this.worldService.load(
       game.world,
       game.ground_grid,
@@ -254,6 +258,19 @@ export class LoadingService {
     );
     this.transportService.load(game.transports);
     this.playerService.load(game.player);
+    const gains: OfflineGain =
+      this.playerService.calculateAndApplyGainsOverTime(
+        oldGame.player,
+        oldGame.saveTime
+      );
+    this.modalService.open<OfflineGain>(OfflineGainsModalComponent, {
+      title: 'Offline gains',
+      message:
+        'You have gained resources and experience while you were offline.',
+      confirmText: 'Great !',
+      cancelText: "I don't care.",
+      data: gains,
+    });
   }
 
   async getLocalSave(id: number): Promise<Game> {
@@ -276,12 +293,7 @@ export class LoadingService {
     const ground_grid = TransportationGrid.fromJSON(json.ground_grid);
     const sea_grid = TransportationGrid.fromJSON(json.sea_grid);
     const currentBurg = Burg.fromJSON(json.currentBurg);
-    const playerInventory = Inventory.fromJSON(json.player.inventory);
-    const jobs: Job[] = [];
-    for (let j of json.player.jobs) {
-      jobs.push(Job.fromJSON(j));
-    }
-    const player = new Player(playerInventory, jobs, json.player.etat);
+    const player = Player.fromJSON(json.player);
 
     let transportData: TransportData = {
       nbCarriages: json.transports.nbCarriages,

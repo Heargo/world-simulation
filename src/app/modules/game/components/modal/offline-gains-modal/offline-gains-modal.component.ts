@@ -1,21 +1,19 @@
 import { Component } from '@angular/core';
 import { BaseModalComponent } from '../../../../../core/components/base-modal/base-modal.component';
 import { ModalPayload } from '../../../../../core/models/modal/modal-payload';
+import { OfflineGain } from '../../../models/game';
 
 @Component({
-  selector: 'app-save-modal',
-  templateUrl: './save-modal.component.html',
-  styleUrls: ['./save-modal.component.scss'],
+  selector: 'app-offline-gains-modal',
+  templateUrl: './offline-gains-modal.component.html',
+  styleUrls: ['./offline-gains-modal.component.scss'],
 })
-export class SaveModalComponent extends BaseModalComponent<any> {
-  name: string = '';
-
+export class OfflineGainsModalComponent extends BaseModalComponent<OfflineGain> {
   constructor() {
     super();
   }
 
   handleClose(event: ModalPayload) {
-    const editedPayload = { ...event, data: this.name };
-    this.onClose(editedPayload);
+    this.onClose(event);
   }
 }

@@ -18,26 +18,37 @@ export class Job {
   maxLevel: number;
   currentExperience: number;
   nextLevelExperience: number;
-  maxHarvestingValue: number;
 
   constructor(
     type: JobType,
     currentLevel: number,
     maxLevel: number,
-    maxHarvestingValue: number,
     currentExperience?: number,
     nextLevelExperience?: number
   ) {
     this.type = type;
     this.currentLevel = currentLevel;
     this.maxLevel = maxLevel;
-    this.maxHarvestingValue = maxHarvestingValue;
 
-    if (currentExperience) this.currentExperience = currentExperience;
-    else this.currentExperience = 0;
+    if (currentExperience) {
+      this.currentExperience = currentExperience;
+    } else {
+      console.log(
+        'no current experience setting to 0 instead',
+        currentExperience
+      );
+      this.currentExperience = 0;
+    }
 
-    if (nextLevelExperience) this.nextLevelExperience = nextLevelExperience;
-    else this.nextLevelExperience = this.calculateExperienceToNextLevel();
+    if (nextLevelExperience) {
+      this.nextLevelExperience = nextLevelExperience;
+    } else {
+      console.log(
+        'no next level experience setting to calculated value instead',
+        nextLevelExperience
+      );
+      this.nextLevelExperience = this.calculateExperienceToNextLevel();
+    }
   }
 
   static fromJSON(data: any) {
@@ -45,7 +56,6 @@ export class Job {
       data.type,
       data.currentLevel,
       data.maxLevel,
-      data.maxHarvestingValue,
       data.currentExperience,
       data.nextLevelExperience
     );
@@ -56,16 +66,17 @@ export class Job {
       this.currentLevel++;
       this.currentExperience = 0;
       this.nextLevelExperience = this.calculateExperienceToNextLevel();
-      this.maxHarvestingValue += this.currentLevel;
     }
   }
 
   gainExp(experience: number) {
     if (this.currentLevel === this.maxLevel) return;
-    this.currentExperience += experience;
-    let prct = (this.currentExperience / this.nextLevelExperience) * 100;
-    if (this.currentExperience >= this.nextLevelExperience) {
+    let expToCap = this.nextLevelExperience - this.currentExperience;
+    if (experience >= expToCap) {
       this.levelUp();
+      this.gainExp(experience - expToCap);
+    } else {
+      this.currentExperience += experience;
     }
   }
 
@@ -86,11 +97,10 @@ export class Job {
 
   getHarvestingSpeed(resource: Resource): number {
     if (JOB_RELATED_RESOURCES[this.type].includes(resource.type)) {
-      // Bonus apply only if the resource as a value lower than 90 % maxHarvestingValue or 1
       // This is to avoid avoid bonus on new unlocked resources
-      if (resource.value <= Math.max(this.maxHarvestingValue * 0.9, 1)) {
+      if (resource.unlockLevel < this.currentLevel) {
         //linear interpolation between minBoost and maxBoost based on the level of the job
-        let minLevel = 1;
+        let minLevel = resource.unlockLevel; //we use the min level as the unlock level of the resource
         let minBoost = 1;
         let maxBoost = 10;
         let boost =

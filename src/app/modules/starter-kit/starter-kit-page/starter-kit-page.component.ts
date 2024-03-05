@@ -4,6 +4,7 @@ import { CustomModalComponent } from '../custom-modal/custom-modal.component';
 import { ToastLevel } from '../../../core/models/toast-level';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { ToastService } from '../../../core/services/toast/toast.service';
+import { ModalPayload } from '../../../core/models/modal/modal-payload';
 
 @Component({
   selector: 'app-starter-kit-page',
@@ -30,7 +31,7 @@ export class StarterKitPageComponent {
   openModal() {
     this.modalService
       .open(CustomModalComponent, { title: "What's your name ?" })
-      .subscribe(payload => {
+      .subscribe((payload: ModalPayload) => {
         if (payload.success) {
           this.toastService.Show('Hello ' + payload.data, ToastLevel.Success);
         } else {

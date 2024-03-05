@@ -18,7 +18,7 @@ import { ModalPayload } from '../../../core/models/modal/modal-payload';
   outputs: ['closeEvent'],
 })
 export class ModalComponent implements OnDestroy {
-  @Input() options: ModalOptions = DEFAULT_MODAL_OPTIONS;
+  @Input() options: ModalOptions<unknown> = DEFAULT_MODAL_OPTIONS;
 
   /**
    * @description

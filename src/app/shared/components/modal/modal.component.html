@@ -1,8 +1,8 @@
 <div class="blurry-bg"></div>
 <div class="modal flex-col center middle">
   <h2>{{ options.title ? options.title : 'no title' }}</h2>
-  <ng-content></ng-content>
   <p *ngIf="options.message">{{ options.message }}</p>
+  <ng-content></ng-content>
   <div class="flex-row middle center">
     <button
       class="big"

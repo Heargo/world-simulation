@@ -7,7 +7,7 @@ import { ModalPayload } from '../../../core/models/modal/modal-payload';
   templateUrl: './custom-modal.component.html',
   styleUrls: ['./custom-modal.component.scss'],
 })
-export class CustomModalComponent extends BaseModalComponent {
+export class CustomModalComponent extends BaseModalComponent<any> {
   username: string = '';
 
   constructor() {

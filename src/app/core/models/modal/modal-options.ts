@@ -1,13 +1,14 @@
-export interface ModalOptions {
+export interface ModalOptions<T> {
   title?: string;
   message?: string;
   confirmText?: string;
   cancelText?: string;
   confirmColor?: string;
   cancelColor?: string;
+  data?: T;
 }
 
-export const DEFAULT_MODAL_OPTIONS: ModalOptions = {
+export const DEFAULT_MODAL_OPTIONS: ModalOptions<any> = {
   title: 'Modal title',
   message: '',
   confirmText: 'Yes',
@@ -16,7 +17,7 @@ export const DEFAULT_MODAL_OPTIONS: ModalOptions = {
   cancelColor: 'basic',
 };
 
-export const MODAL_CONFIRM_OPTIONS: ModalOptions = {
+export const MODAL_CONFIRM_OPTIONS: ModalOptions<any> = {
   title: 'Please confirm your choice',
   message: 'Are you sure you want to do this?',
   cancelText: 'Cancel',

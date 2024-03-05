@@ -1,0 +1,12 @@
+<app-modal [options]="options" (closeEvent)="handleClose($event)">
+  <!-- custom info -->
+  <div class="flex-col center middle">
+    <p *ngFor="let r of options.data!.resources">
+      {{ r.resource.name }} x{{ r.quantity }}
+    </p>
+
+    <p *ngFor="let j of options.data!.jobs">
+      {{ j.job }}: {{ j.oldLevel }} -> {{ j.newLevel }}
+    </p>
+  </div>
+</app-modal>

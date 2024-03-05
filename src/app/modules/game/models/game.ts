@@ -3,6 +3,8 @@ import { Vehicle } from './vehicule';
 import { World } from './world';
 import { Burg } from './burg';
 import { TransportationGrid } from './transportation-grid';
+import { Resource } from './resources';
+import { Job, JobType } from './jobs';
 
 export interface Game {
   world: World;
@@ -20,4 +22,21 @@ export interface TransportData {
   nbShips: number;
   carriages: { [key: number]: Vehicle[] };
   ships: { [key: number]: Vehicle[] };
+}
+
+export interface OfflineGain {
+  resources: OfflineResourceGain[];
+  jobs: OfflineJobGain[];
+  timeOffline: number; //in ms
+}
+
+export interface OfflineResourceGain {
+  resource: Resource;
+  quantity: number;
+}
+
+export interface OfflineJobGain {
+  job: JobType;
+  oldLevel: number;
+  newLevel: number;
 }

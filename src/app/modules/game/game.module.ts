@@ -23,6 +23,7 @@ import { SideMenuComponent } from './components/side-menu/side-menu.component';
 import { InventoryCategoryPipe } from './pipes/inventory-category.pipe';
 import { InventoryTabUnlockedPipe } from './pipes/inventory-tab-unlocked.pipe';
 import { SaveModalComponent } from './components/modal/save-modal/save-modal.component';
+import { OfflineGainsModalComponent } from './components/modal/offline-gains-modal/offline-gains-modal.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { SaveModalComponent } from './components/modal/save-modal/save-modal.com
     ResourceCardComponent,
     InventoryPageComponent,
     SaveModalComponent,
+    OfflineGainsModalComponent,
   ],
   imports: [CommonModule, GameRoutingModule, SharedModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

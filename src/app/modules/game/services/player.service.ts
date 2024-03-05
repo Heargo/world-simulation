@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Player } from '../models/player';
 import { Resource } from '../models/resources';
 import { WorldService } from './world.service';
+import { OfflineGain, OfflineJobGain } from '../models/game';
+import { Job } from '../models/jobs';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +16,56 @@ export class PlayerService {
 
   load(player: Player): void {
     this.player = player;
+    //based on the player's state, we can re-trigger the harvesting
+    if (player.etat.currentHarvest) {
+      this.harvest(player.etat.currentHarvest, true);
+    }
+  }
+
+  calculateAndApplyGainsOverTime(
+    player: Player,
+    savedTime: number
+  ): OfflineGain {
+    const spanBetweenLastUpdate = Date.now() - savedTime;
+    let gains: OfflineGain = {
+      resources: [],
+      jobs: [],
+      timeOffline: spanBetweenLastUpdate,
+    };
+
+    //calculate gain over time from player etat
+    if (player.etat.currentHarvest) {
+      const resource: Resource = player.etat.currentHarvest;
+      const job: Job = player.etat.currentJobActive!;
+      //time to perform the harvest in ms
+      const speed: number = job.getHarvestingSpeed(resource) || 0;
+      const quantityFactor: number =
+        this.worldService.currentBurg.getResourceHarvestingQuantity(resource);
+      const gain = Math.floor((spanBetweenLastUpdate / speed) * quantityFactor);
+      gains.resources.push({ resource: resource, quantity: gain });
+    }
+    //apply the gains to the player
+    gains.resources.forEach(gain => {
+      this.player.inventory.add(gain.resource, gain.quantity);
+      this.player.gainExperienceFromHarvesting(gain.resource, gain.quantity);
+    });
+
+    gains.jobs = this.getOfflineJobGains(player);
+    return gains;
+  }
+
+  private getOfflineJobGains(player: Player): OfflineJobGain[] {
+    const jobGains: OfflineJobGain[] = [];
+    for (let job of this.player.jobs) {
+      const jobGain: OfflineJobGain = {
+        job: job.type,
+        oldLevel: player.getJob(job.type)!.currentLevel,
+        newLevel: job.currentLevel,
+      };
+      if (jobGain.oldLevel !== jobGain.newLevel) jobGains.push(jobGain);
+    }
+
+    return jobGains;
   }
 
   canHarvestResource(resource: Resource): boolean {
@@ -31,18 +83,20 @@ export class PlayerService {
   stopHarvesting(): void {
     if (this.resourceHarvest) {
       clearInterval(this.resourceHarvest);
-      this.player.etat.currentHarvest = undefined;
-      this.player.etat.currentJobActive = undefined;
     }
+    this.player.etat.currentJobActive = undefined;
+    this.player.etat.currentHarvest = undefined;
   }
 
-  harvest(resource: Resource): void {
+  harvest(resource: Resource, forceHarvest: boolean = false): void {
     if (!this.canHarvestResource(resource)) return;
-    if (this.player.etat.currentHarvest?.name === resource.name) {
+    if (
+      this.player.etat.currentHarvest?.name === resource.name &&
+      !forceHarvest
+    ) {
       this.stopHarvesting();
       return;
     }
-
     this.stopHarvesting();
 
     //start harvesting the resource

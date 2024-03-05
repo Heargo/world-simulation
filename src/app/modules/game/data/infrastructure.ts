@@ -49,4 +49,12 @@ export const INFRASTRUCTURES_STATS: { [key: string]: Infrastructure } = {
     maintenanceFactor: 0.05,
     production: {},
   }),
+  smithy: new Infrastructure({
+    name: 'Smithy',
+    icon: 'smithy',
+    type: InfrastructureType.Job,
+    initialBuildingCost: { coin: 100, wood: 100, stone: 100, iron: 100 },
+    maintenanceFactor: 0.05,
+    production: {},
+  }),
 };

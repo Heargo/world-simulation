@@ -6,6 +6,7 @@ export interface ResourceData {
   quantity?: number;
   harvestRequiredResources?: { [key: string]: number };
   passive?: boolean;
+  unlockLevel?: number;
 }
 
 export class Resource {
@@ -19,6 +20,7 @@ export class Resource {
   harvestTime?: number = 1;
   harvestRequiredResources?: { [key: string]: number } = {};
   passive: boolean = false;
+  unlockLevel: number;
 
   constructor(data: ResourceData) {
     this.name = data.name;
@@ -39,6 +41,9 @@ export class Resource {
 
     if (data.passive) this.passive = data.passive;
     else this.passive = false;
+
+    if (data.unlockLevel) this.unlockLevel = data.unlockLevel;
+    else this.unlockLevel = 0;
   }
 
   static fromJSON(data: Object) {

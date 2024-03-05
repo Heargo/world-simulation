@@ -7,7 +7,7 @@ import { BaseModalComponent } from '../../../core/components/base-modal/base-mod
   styleUrls: ['./confirm-modal.component.scss'],
   outputs: ['closeEvent'],
 })
-export class ConfirmModalComponent extends BaseModalComponent {
+export class ConfirmModalComponent extends BaseModalComponent<any> {
   constructor() {
     super();
   }

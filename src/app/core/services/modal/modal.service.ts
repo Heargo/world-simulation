@@ -23,28 +23,28 @@ export class ModalService {
 
   constructor(@Inject(DOCUMENT) private document: Document) {}
 
-  open(content: any, options?: ModalOptions) {
+  open<T>(content: any, options?: ModalOptions<T>) {
     this.document.body.style.overflow = 'hidden';
     const modal = this.viewContainerRef.createComponent(content);
     if (options) {
-      (modal.instance as BaseModalComponent).options = options;
+      (modal.instance as BaseModalComponent<T>).options = options;
     }
     this.modals.push(modal);
 
     //destroy modal when close event is emitted
-    (modal.instance as BaseModalComponent).closeEvent
+    (modal.instance as BaseModalComponent<T>).closeEvent
       .pipe(take(1))
       .subscribe(() => {
         this.destroyModal(modal);
       });
 
-    return (modal.instance as BaseModalComponent).closeEvent
+    return (modal.instance as BaseModalComponent<T>).closeEvent
       .asObservable()
       .pipe(take(1));
   }
 
   openConfirmModal(
-    options: ModalOptions = MODAL_CONFIRM_OPTIONS
+    options: ModalOptions<unknown> = MODAL_CONFIRM_OPTIONS
   ): Observable<ModalPayload> {
     this.document.body.style.overflow = 'hidden';
     const modal = this.viewContainerRef.createComponent(ConfirmModalComponent);

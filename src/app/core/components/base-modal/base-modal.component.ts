@@ -9,8 +9,8 @@ import {
 @Component({
   template: '',
 })
-export class BaseModalComponent extends BaseAppComponent {
-  @Input() options: ModalOptions = DEFAULT_MODAL_OPTIONS;
+export class BaseModalComponent<T> extends BaseAppComponent {
+  @Input() options: ModalOptions<T> = DEFAULT_MODAL_OPTIONS;
 
   @Output() closeEvent = new EventEmitter<ModalPayload>();
 

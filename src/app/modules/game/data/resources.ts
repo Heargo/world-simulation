@@ -75,11 +75,13 @@ export const RAW_RESOURCES: { [key: string]: Resource } = {
     name: 'Copper',
     type: ResourceType.Mining,
     value: 5,
+    unlockLevel: 5,
   }),
   iron: new Resource({
     name: 'Iron',
     type: ResourceType.Mining,
     value: 10,
+    unlockLevel: 10,
   }),
   salmon: new Resource({
     name: 'Salmon',
@@ -90,6 +92,7 @@ export const RAW_RESOURCES: { [key: string]: Resource } = {
     name: 'Tuna',
     type: ResourceType.Fishing,
     value: 3,
+    unlockLevel: 5,
   }),
   plank: new Resource({
     name: 'Plank',
@@ -102,17 +105,20 @@ export const RAW_RESOURCES: { [key: string]: Resource } = {
     type: ResourceType.SmithingIngredient,
     value: 10,
     harvestRequiredResources: { copper: 1, coal: 1 },
+    unlockLevel: 5,
   }),
   ironIngot: new Resource({
     name: 'Iron Ingot',
     type: ResourceType.SmithingIngredient,
     value: 20,
     harvestRequiredResources: { iron: 1, coal: 2 },
+    unlockLevel: 10,
   }),
   refinedCoal: new Resource({
     name: 'Refined Coal',
     type: ResourceType.SmithingIngredient,
     value: 50,
     harvestRequiredResources: { coal: 10 },
+    unlockLevel: 15,
   }),
 };

@@ -1,3 +1,5 @@
+import { JobType } from './jobs';
+
 export class Infrastructure {
   static INFRASTRUCTURES_ID = 0;
 
@@ -12,6 +14,8 @@ export class Infrastructure {
   initialBuildingCost: { [key: string]: number }; //used to calculate the cost of each level
   maintenanceFactor: number; //0-1, used to calculate the maintenance cost of each level
   production: { [key: string]: number }; //used to calculate the production of each level
+  relatedJobs: JobType[];
+  owned: boolean = false;
 
   constructor(data: any) {
     this.id = Infrastructure.INFRASTRUCTURES_ID++;
@@ -32,6 +36,12 @@ export class Infrastructure {
     //maxQuantity
     if (data.maxQuantity) this.maxQuantity = data.maxQuantity;
     else this.maxQuantity = 1;
+
+    if (data.relatedJobs) this.relatedJobs = data.relatedJobs;
+    else this.relatedJobs = [];
+
+    if (data.owned) this.owned = data.owned;
+    data.owned = false;
 
     this.initialBuildingCost = data.cost;
     this.maintenanceFactor = data.maintenanceFactor;
@@ -78,4 +88,5 @@ export enum InfrastructureType {
   Plaza = 'plaza',
   Shanty = 'shanty',
   Temple = 'temple',
+  Job = 'job',
 }
