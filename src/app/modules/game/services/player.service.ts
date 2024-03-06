@@ -121,6 +121,7 @@ export class PlayerService {
       this.player.inventory.removeMultiple(resource.harvestRequiredResources);
     }
     //collect it & gain experience
+    console.log('harvesting', resource.name, quantity);
     this.player.inventory.add(resource, quantity);
     this.player.gainExperienceFromHarvesting(resource, quantity);
 

@@ -77,6 +77,7 @@ export class Infrastructure {
       initialBuildingCost: this.initialBuildingCost,
       maintenanceFactor: this.maintenanceFactor,
       production: this.production,
+      relatedJobs: this.relatedJobs,
     };
   }
 }

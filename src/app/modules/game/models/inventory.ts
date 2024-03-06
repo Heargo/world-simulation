@@ -34,7 +34,7 @@ export class Inventory {
   }
 
   add(resource: Resource, quantity: number): void {
-    const element = this.content.find(el => el.resource === resource);
+    const element = this.content.find(el => el.resource.key === resource.key);
     if (element) {
       element.quantity += quantity;
     } else {
@@ -66,8 +66,9 @@ export class Inventory {
   }
 
   removeMultiple(resources: { [key: string]: number }): void {
+    console.log('before', JSON.parse(JSON.stringify(this.content)));
     for (const key in resources) {
-      const resource = this.content.find(el => el.resource.name === key);
+      const resource = this.content.find(el => el.resource.key === key);
       if (resource) {
         resource.quantity -= resources[key];
         if (resource.quantity <= 0) {
@@ -77,12 +78,13 @@ export class Inventory {
         }
       }
     }
+    console.log('after', JSON.parse(JSON.stringify(this.content)));
   }
 
   hasResources(resources?: { [key: string]: number }): boolean {
     if (!resources) return true;
     for (const key in resources) {
-      const resource = this.content.find(el => el.resource.name === key);
+      const resource = this.content.find(el => el.resource.key === key);
       if (!resource || resource.quantity < resources[key]) return false;
     }
     return true;

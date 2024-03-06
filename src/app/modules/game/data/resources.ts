@@ -55,70 +55,70 @@ export const RESOURCE_TYPE_AVAILABILTY: {
   ],
 };
 
-export const RAW_RESOURCES: { [key: string]: Resource } = {
-  wood: new Resource({
+export const RAW_RESOURCES: Resource[] = [
+  new Resource({
     name: 'Wood',
     type: ResourceType.Woodcutting,
     value: 1,
   }),
-  stone: new Resource({
+  new Resource({
     name: 'Stone',
     type: ResourceType.Mining,
     value: 1,
   }),
-  coal: new Resource({
+  new Resource({
     name: 'Coal',
     type: ResourceType.Mining,
     value: 2,
   }),
-  copper: new Resource({
+  new Resource({
     name: 'Copper',
     type: ResourceType.Mining,
     value: 5,
     unlockLevel: 5,
   }),
-  iron: new Resource({
+  new Resource({
     name: 'Iron',
     type: ResourceType.Mining,
     value: 10,
     unlockLevel: 10,
   }),
-  salmon: new Resource({
+  new Resource({
     name: 'Salmon',
     type: ResourceType.Fishing,
     value: 1,
   }),
-  tuna: new Resource({
+  new Resource({
     name: 'Tuna',
     type: ResourceType.Fishing,
     value: 3,
     unlockLevel: 5,
   }),
-  plank: new Resource({
+  new Resource({
     name: 'Plank',
     type: ResourceType.CraftingIngredient,
     value: 2,
     harvestRequiredResources: { wood: 1 },
   }),
-  copperIngot: new Resource({
+  new Resource({
     name: 'Copper Ingot',
     type: ResourceType.SmithingIngredient,
     value: 10,
     harvestRequiredResources: { copper: 1, coal: 1 },
-    unlockLevel: 5,
+    unlockLevel: 1,
   }),
-  ironIngot: new Resource({
+  new Resource({
     name: 'Iron Ingot',
     type: ResourceType.SmithingIngredient,
     value: 20,
     harvestRequiredResources: { iron: 1, coal: 2 },
     unlockLevel: 10,
   }),
-  refinedCoal: new Resource({
+  new Resource({
     name: 'Refined Coal',
     type: ResourceType.SmithingIngredient,
     value: 50,
     harvestRequiredResources: { coal: 10 },
     unlockLevel: 15,
   }),
-};
+];

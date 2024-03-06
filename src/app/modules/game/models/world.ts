@@ -1,7 +1,5 @@
-import { JOB_RELATED_RESOURCES } from '../data/jobs';
 import { RESOURCE_TYPE_AVAILABILTY } from '../data/resources';
 import { Burg, BurgType } from './burg';
-import { JobType } from './jobs';
 import { ResourceType } from './resources';
 
 import { WorldRaw } from './world-raw';
@@ -87,27 +85,13 @@ export class World {
         biome.name
       );
       burg.resourceTypeFactor = this.getResourceTypeFactor(biome.name);
-      burg.availableJobsTypes = this.getAvailableJobsTypes(burg);
+      burg.generateAvailableJobsTypes();
+      burg.updateAvailableResourcesTypes();
       raw.burgs[i] = burg;
     }
     //remove burgs with undefined id
     raw.burgs = raw.burgs.filter((b: Burg) => b.id != undefined);
     return raw as MapData;
-  }
-
-  private getAvailableJobsTypes(burg: Burg): JobType[] {
-    let availableJobsTypes: JobType[] = [];
-    let availableResourcesTypes = burg.availableResourcesTypes;
-    for (let job in JOB_RELATED_RESOURCES) {
-      if (
-        availableResourcesTypes.some(resourceType =>
-          JOB_RELATED_RESOURCES[job].includes(resourceType)
-        )
-      ) {
-        availableJobsTypes.push(job as JobType);
-      }
-    }
-    return availableJobsTypes;
   }
 
   private resourceTypeAvailableInBurg(biomeName: string): ResourceType[] {

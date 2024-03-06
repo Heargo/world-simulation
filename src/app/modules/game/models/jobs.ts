@@ -1,6 +1,4 @@
-import { JOB_RELATED_RESOURCES } from '../data/jobs';
-import { Resource } from './resources';
-
+import { Resource, ResourceType } from './resources';
 export enum JobType {
   Farmer = 'farmer',
   Lumberjack = 'lumberjack',
@@ -11,6 +9,20 @@ export enum JobType {
   Merchant = 'merchant',
   Cook = 'cook',
 }
+
+export const JOB_RELATED_RESOURCES: { [key: string]: ResourceType[] } = {
+  [JobType.Farmer]: [ResourceType.Farming],
+  [JobType.Lumberjack]: [ResourceType.Woodcutting],
+  [JobType.Miner]: [ResourceType.Mining],
+  [JobType.Blacksmith]: [ResourceType.SmithingIngredient],
+  [JobType.CraftsMan]: [
+    ResourceType.Construction,
+    ResourceType.CraftingIngredient,
+  ],
+  [JobType.Alchemist]: [ResourceType.AlchemyIngredient],
+  [JobType.Merchant]: [ResourceType.Currency],
+  [JobType.Cook]: [ResourceType.CookingIngredient, ResourceType.Food],
+};
 
 export class Job {
   type: JobType;

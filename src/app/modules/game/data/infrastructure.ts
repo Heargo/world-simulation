@@ -1,4 +1,5 @@
 import { Infrastructure, InfrastructureType } from '../models/infrastructures';
+import { JobType } from '../models/jobs';
 
 export const INFRASTRUCTURES_STATS: { [key: string]: Infrastructure } = {
   walls: new Infrastructure({
@@ -56,5 +57,10 @@ export const INFRASTRUCTURES_STATS: { [key: string]: Infrastructure } = {
     initialBuildingCost: { coin: 100, wood: 100, stone: 100, iron: 100 },
     maintenanceFactor: 0.05,
     production: {},
+    relatedJobs: [JobType.Blacksmith],
   }),
 };
+
+export const DEFAULT_INFRASTRUCTURES: Infrastructure[] = [
+  INFRASTRUCTURES_STATS['smithy'],
+];

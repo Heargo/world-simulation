@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JOB_RELATED_RESOURCES } from '../../data/jobs';
 import { RAW_RESOURCES } from '../../data/resources';
-import { Job, JobType } from '../../models/jobs';
+import { JOB_RELATED_RESOURCES, Job, JobType } from '../../models/jobs';
 import { Resource } from '../../models/resources';
 
 import { PlayerService } from '../../services/player.service';

@@ -1,5 +1,7 @@
 export interface ResourceData {
   name: string;
+  key?: string;
+  icon?: string;
   type: ResourceType;
   value: number;
   spaceUsed?: number;
@@ -11,6 +13,7 @@ export interface ResourceData {
 
 export class Resource {
   name: string;
+  key: string;
   icon: string;
   type: ResourceType;
   value: number;
@@ -24,8 +27,14 @@ export class Resource {
 
   constructor(data: ResourceData) {
     this.name = data.name;
-    this.icon = data.name.toLowerCase().split(' ').join('-');
     this.type = data.type;
+
+    if (data.key) this.key = data.key;
+    else this.key = data.name.toLowerCase().split(' ').join('_');
+
+    if (data.icon) this.icon = data.icon;
+    else this.icon = data.name.toLowerCase().split(' ').join('-');
+
     if (data.value) this.value = data.value;
     else this.value = 1;
 
