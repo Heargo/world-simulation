@@ -251,7 +251,15 @@ export class LoadingService {
       gameDataId: idGameData,
     };
     let previewId = this.currentGameInfo?.id;
-    await this.dbService.save('gamesPreview', preview, previewId);
+    previewId = (await this.dbService.save(
+      'gamesPreview',
+      preview,
+      previewId
+    )) as number;
+    this.currentGameInfo = {
+      id: previewId,
+      data: preview,
+    };
     this.saving = false;
   }
 
