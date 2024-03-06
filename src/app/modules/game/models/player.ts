@@ -38,8 +38,12 @@ export class Player {
       isInTransit: data.etat.isInTransit,
       timeLeftInTransit: data.etat.timeLeftInTransit,
       destinationBurgId: data.etat.destinationBurgId,
-      currentHarvest: Resource.fromJSON(data.etat.currentHarvest),
-      currentJobActive: Job.fromJSON(data.etat.currentJobActive),
+      currentHarvest: data.etat.currentHarvest
+        ? Resource.fromJSON(data.etat.currentHarvest)
+        : undefined,
+      currentJobActive: data.etat.currentJobActive
+        ? Job.fromJSON(data.etat.currentJobActive)
+        : undefined,
     };
 
     return new Player(playerInventory, jobs, etat);

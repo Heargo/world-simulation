@@ -14,11 +14,16 @@
     </div>
     <div *ngIf="loadingDetails" class="flex-col center middle w-100 h-100">
       <p
-        *ngFor="let save of localSaves"
+        *ngFor="let gamePreview of localSaves"
         class="card-clickable w-100"
-        (click)="onLoadGame(save)">
-        {{ save.saveName ? save.saveName : ('untitled' | translate) }} -
-        {{ save.world.info.mapName }} - {{ save.saveTime | date: 'short' }}
+        (click)="onLoadGame(gamePreview)">
+        {{
+          gamePreview.data.name
+            ? gamePreview.data.name
+            : ('untitled' | translate)
+        }}
+        - {{ gamePreview.data.worldName }} -
+        {{ gamePreview.data.date | date: 'short' }}
       </p>
       <div></div>
     </div>

@@ -26,7 +26,13 @@
     </div>
   </div>
   <div *ngIf="loadingService.loadComplete">
-    <button class="primary" (click)="saveGame()">Save</button>
+    <button class="primary flex-row middle left" (click)="saveGame()">
+      <app-icon
+        *ngIf="loadingService.saving"
+        name="loader"
+        size="1rem"></app-icon>
+      Save
+    </button>
   </div>
 
   <!-- end -->

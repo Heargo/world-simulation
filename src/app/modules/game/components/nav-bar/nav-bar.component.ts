@@ -6,6 +6,7 @@ import { PlayerService } from '../../services/player.service';
 import { ModalService } from '../../../../core/services/modal/modal.service';
 import { SaveModalComponent } from '../modal/save-modal/save-modal.component';
 import { take } from 'rxjs';
+import { ToastService } from '../../../../core/services/toast/toast.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -15,28 +16,16 @@ import { take } from 'rxjs';
 export class NavBarComponent extends BaseAppComponent {
   //isConnected = false;
   //use AuthentificationService to get the current user
+
   constructor(
     public readonly authService: AuthService,
     public readonly playerService: PlayerService,
-    public readonly loadingService: LoadingService,
-    private readonly modalService: ModalService
+    public readonly loadingService: LoadingService
   ) {
     super();
   }
 
-  saveGame() {
-    this.modalService
-      .open(SaveModalComponent, {
-        title: 'Save Game',
-        message:
-          'Do you want to save the game? Please enter a name for the save.',
-        confirmText: 'Save',
-      })
-      .pipe(take(1))
-      .subscribe(event => {
-        if (event.success) {
-          this.loadingService.saveGame(event.data);
-        }
-      });
+  async saveGame() {
+    this.loadingService.saveCurrentGame();
   }
 }

@@ -13,7 +13,7 @@ import {
 } from '../models/transportation-grid';
 import { WorldService } from './world.service';
 import { TransportService } from './transports.service';
-import { Game, OfflineGain, TransportData } from '../models/game';
+import { Game, GamePreview, OfflineGain, TransportData } from '../models/game';
 import { PlayerService } from './player.service';
 import { DatabaseService } from './database.service';
 import { Player } from '../models/player';
@@ -22,6 +22,7 @@ import { Vehicle, VehicleType } from '../models/vehicule';
 import { Job } from '../models/jobs';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { OfflineGainsModalComponent } from '../components/modal/offline-gains-modal/offline-gains-modal.component';
+import { DbEntry } from '../models/db';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,11 @@ export class LoadingService {
   ground_grid!: TransportationGrid;
   sea_grid!: TransportationGrid;
 
+  currentGameName?: string;
+  currentGameInfo?: DbEntry<GamePreview>;
+
   loadComplete = false;
+  saving = false;
 
   currentBurg!: Burg;
 
@@ -215,7 +220,7 @@ export class LoadingService {
     this.loadComplete = true;
   }
 
-  getSave(name?: string): Game {
+  getSave(): Game {
     let save: Game = {
       world: this.worldService.world,
       ground_grid: this.worldService.ground_grid,
@@ -224,31 +229,39 @@ export class LoadingService {
       player: this.playerService.player,
       transports: this.transportService.save(),
       saveTime: Date.now(),
-      saveName: name,
+      saveName: this.currentGameName ? this.currentGameName : 'New game',
     };
     return save;
   }
 
-  saveGame(name?: string) {
-    const save: Game = this.getSave(name);
+  async saveCurrentGame() {
+    this.saving = true;
+    const save: Game = this.getSave();
     const jsonSave = JSON.parse(JSON.stringify(save));
-    this.dbService.save('games', jsonSave);
+    let idGameData = this.currentGameInfo?.data.gameDataId;
+    idGameData = (await this.dbService.save<Game>(
+      'games',
+      jsonSave,
+      idGameData
+    )) as number;
+    const preview: GamePreview = {
+      name: save.saveName!,
+      date: save.saveTime,
+      worldName: save.world.info.mapName,
+      gameDataId: idGameData,
+    };
+    let previewId = this.currentGameInfo?.id;
+    await this.dbService.save('gamesPreview', preview, previewId);
+    this.saving = false;
   }
 
   downloadSave() {
-    let save: Game = this.getSave();
-    let blob = new Blob([JSON.stringify(save)], {
-      type: 'application/json',
-    });
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = 'save.json';
-    a.click();
-    a.remove();
+    console.warn('not implemented');
   }
 
-  loadGame(game: Game) {
+  loadGame(game: Game, gamePreview: DbEntry<GamePreview>) {
+    this.currentGameInfo = gamePreview;
+    this.currentGameName = gamePreview.data.name;
     const oldGame = this.jsonToGame(JSON.parse(JSON.stringify(game)));
     this.worldService.load(
       game.world,
@@ -263,14 +276,16 @@ export class LoadingService {
         oldGame.player,
         oldGame.saveTime
       );
-    this.modalService.open<OfflineGain>(OfflineGainsModalComponent, {
-      title: 'Offline gains',
-      message:
-        'You have gained resources and experience while you were offline.',
-      confirmText: 'Great !',
-      cancelText: "I don't care.",
-      data: gains,
-    });
+    if (gains.resources.length > 0 || gains.jobs.length > 0) {
+      this.modalService.open<OfflineGain>(OfflineGainsModalComponent, {
+        title: 'Offline gains',
+        message:
+          'You have gained resources and experience while you were offline.',
+        confirmText: 'Great !',
+        cancelText: "I don't care.",
+        data: gains,
+      });
+    }
   }
 
   async getLocalSave(id: number): Promise<Game> {
@@ -278,14 +293,9 @@ export class LoadingService {
     return this.jsonToGame(save);
   }
 
-  async getLocalSaves(): Promise<Game[]> {
-    const saves = await this.dbService.list<Game>('games');
-    const games: Game[] = [];
-    saves.forEach(save => {
-      games.push(this.jsonToGame(save));
-    });
-
-    return games;
+  async getLocalSaves(): Promise<DbEntry<GamePreview>[]> {
+    const saves = await this.dbService.list<GamePreview>('gamesPreview');
+    return saves;
   }
 
   jsonToGame(json: Game): Game {

@@ -4,7 +4,7 @@ import { World } from './world';
 import { Burg } from './burg';
 import { TransportationGrid } from './transportation-grid';
 import { Resource } from './resources';
-import { Job, JobType } from './jobs';
+import { JobType } from './jobs';
 
 export interface Game {
   world: World;
@@ -14,7 +14,14 @@ export interface Game {
   player: Player;
   transports: TransportData;
   saveTime: number;
-  saveName?: string;
+  saveName: string;
+}
+
+export interface GamePreview {
+  name: string;
+  date: number;
+  worldName: string;
+  gameDataId: number;
 }
 
 export interface TransportData {

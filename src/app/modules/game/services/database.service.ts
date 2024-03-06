@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToastService } from '../../../core/services/toast/toast.service';
 import { ToastLevel } from '../../../core/models/toast-level';
+import { DbEntry } from '../models/db';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,13 @@ export class DatabaseService {
       this.db.createObjectStore('games', {
         autoIncrement: true,
       });
+      const previewStore = this.db.createObjectStore('gamesPreview', {
+        autoIncrement: true,
+      });
+      previewStore.createIndex('name', 'name', { unique: false });
+      previewStore.createIndex('date', 'date', { unique: false });
+      previewStore.createIndex('worldName', 'worldName', { unique: false });
+      previewStore.createIndex('gameDataId', 'gameDataId', { unique: true });
     };
 
     request.onsuccess = event => {
@@ -27,13 +35,12 @@ export class DatabaseService {
     };
   }
 
-  save<T>(store: string, data: T) {
-    console.log('saveGame');
+  save<T>(store: string, data: T, id?: number): Promise<IDBValidKey> {
     const objectStore = this.db
       .transaction(store, 'readwrite')
       .objectStore(store);
 
-    const request = objectStore.add(data);
+    const request = objectStore.put(data, id);
 
     request.onerror = event => {
       console.error(
@@ -47,10 +54,22 @@ export class DatabaseService {
     };
 
     request.onsuccess = event => {
-      // Data added successfully
-      console.log('Data added successfully');
       this.toastService.Show('Data saved successfully', ToastLevel.Success);
     };
+
+    return new Promise<IDBValidKey>((resolve, reject) => {
+      request.onsuccess = () => {
+        this.toastService.Show('Data saved successfully', ToastLevel.Success);
+        resolve(request.result);
+      };
+      request.onerror = () => {
+        this.toastService.Show(
+          'Error occurred while saving data',
+          ToastLevel.Error
+        );
+        reject(request.error);
+      };
+    });
   }
 
   async load<T>(store: string, id: number): Promise<T> {
@@ -74,16 +93,23 @@ export class DatabaseService {
     });
   }
 
-  async list<T>(store: string): Promise<T[]> {
+  async list<T>(store: string): Promise<DbEntry<T>[]> {
     const objStore = this.db.transaction(store).objectStore(store);
 
-    const r = objStore.getAll();
+    const r = objStore.openCursor();
+    const result: DbEntry<T>[] = [];
 
     //wait for the result (when r.onsuccess is called)
-    return new Promise<T[]>((resolve, reject) => {
+    return new Promise<DbEntry<T>[]>((resolve, reject) => {
       r.onsuccess = () => {
         this.toastService.Show('Data loaded successfully', ToastLevel.Success);
-        resolve(r.result);
+        const cursor = r.result;
+        if (cursor) {
+          result.push({ id: Number(cursor.key), data: cursor.value });
+          cursor.continue();
+        } else {
+          resolve(result);
+        }
       };
       r.onerror = () => {
         this.toastService.Show(
