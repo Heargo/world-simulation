@@ -45,20 +45,12 @@ export class Job {
     if (currentExperience) {
       this.currentExperience = currentExperience;
     } else {
-      console.log(
-        'no current experience setting to 0 instead',
-        currentExperience
-      );
       this.currentExperience = 0;
     }
 
     if (nextLevelExperience) {
       this.nextLevelExperience = nextLevelExperience;
     } else {
-      console.log(
-        'no next level experience setting to calculated value instead',
-        nextLevelExperience
-      );
       this.nextLevelExperience = this.calculateExperienceToNextLevel();
     }
   }
@@ -93,7 +85,7 @@ export class Job {
   }
 
   calculateExperienceToNextLevel(): number {
-    return this.currentLevel ** 2 * 10;
+    return 1.5 ** this.currentLevel * 10;
   }
 
   canHarvestResource(resource: Resource): boolean {
@@ -114,14 +106,14 @@ export class Job {
         //linear interpolation between minBoost and maxBoost based on the level of the job
         let minLevel = resource.unlockLevel; //we use the min level as the unlock level of the resource
         let minBoost = 1;
-        let maxBoost = 10;
+        let maxBoost = 2;
         let boost =
           ((this.maxLevel - this.currentLevel) / (this.maxLevel - minLevel)) *
             minBoost +
           ((this.currentLevel - minLevel) / (this.maxLevel - minLevel)) *
             maxBoost;
 
-        return 1000 / boost; //return the time in ms to harvest the resource. minimum harvesting time is 100ms
+        return 1000 / boost; //return the time in ms to harvest the resource. minimum harvesting time is 500ms
       } else {
         return 1000;
       }

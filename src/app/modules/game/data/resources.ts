@@ -55,7 +55,7 @@ export const RESOURCE_TYPE_AVAILABILTY: {
   ],
 };
 
-export const RAW_RESOURCES: Resource[] = [
+export const ALL_RESOURCES: Resource[] = [
   new Resource({
     name: 'Wood',
     type: ResourceType.Woodcutting,
@@ -82,6 +82,30 @@ export const RAW_RESOURCES: Resource[] = [
     type: ResourceType.Mining,
     value: 10,
     unlockLevel: 10,
+  }),
+  new Resource({
+    name: 'Gold',
+    type: ResourceType.Mining,
+    value: 100,
+    unlockLevel: 15,
+  }),
+  new Resource({
+    name: 'Silver',
+    type: ResourceType.Mining,
+    value: 1000,
+    unlockLevel: 30,
+  }),
+  new Resource({
+    name: 'Platinum',
+    type: ResourceType.Mining,
+    value: 10000,
+    unlockLevel: 60,
+  }),
+  new Resource({
+    name: 'Diamond',
+    type: ResourceType.Mining,
+    value: 100000,
+    unlockLevel: 80,
   }),
   new Resource({
     name: 'Salmon',

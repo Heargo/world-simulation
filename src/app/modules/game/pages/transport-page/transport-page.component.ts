@@ -5,7 +5,7 @@ import { Vehicle } from '../../models/vehicule';
 import { WorldService } from '../../services/world.service';
 import { Observable, map, timer } from 'rxjs';
 import { PlayerService } from '../../services/player.service';
-import { RAW_RESOURCES } from '../../data/resources';
+import { ALL_RESOURCES } from '../../data/resources';
 
 @Component({
   selector: 'app-transport-page',

@@ -4,6 +4,8 @@ import { Resource } from '../models/resources';
 import { WorldService } from './world.service';
 import { OfflineGain, OfflineJobGain } from '../models/game';
 import { Job } from '../models/jobs';
+import { ALL_RESOURCES } from '../data/resources';
+import { JOBS } from '../data/jobs';
 
 @Injectable({
   providedIn: 'root',
@@ -132,5 +134,74 @@ export class PlayerService {
         this.performHarvesting(resource, quantity);
       }, newSpeed);
     }
+  }
+
+  private estimateTimeToNextLevel(job: Job): number {
+    let xpToNextLevel = job.nextLevelExperience - job.currentExperience;
+    //look the available resource with the highest xp per second
+    const resources = ALL_RESOURCES.filter(
+      r => job.canHarvestResource(r) && r.unlockLevel <= job.currentLevel
+    );
+    resources.sort((a, b) => {
+      let xpA = job.getExperienceGainedFromResourceHarvesting(a);
+      let xpB = job.getExperienceGainedFromResourceHarvesting(b);
+      let harvestingSpeedA = job.getHarvestingSpeed(a);
+      let harvestingSpeedB = job.getHarvestingSpeed(b);
+      let xpPerMiliSecondA = xpA / harvestingSpeedA;
+      let xpPerMiliSecondB = xpB / harvestingSpeedB;
+      return xpPerMiliSecondB - xpPerMiliSecondA;
+    });
+    if (resources.length === 0) {
+      return Infinity;
+    }
+    let bestResource = resources[0];
+    console.log('best resource to get to next level', bestResource.name);
+    let xpPerMiliSecond =
+      job.getExperienceGainedFromResourceHarvesting(bestResource) /
+      job.getHarvestingSpeed(bestResource);
+
+    return xpToNextLevel / xpPerMiliSecond;
+  }
+
+  private estimateTimeToMaxLevel(job: Job): number {
+    console.group(job.type);
+    let totalTime = 0;
+    for (let i = job.currentLevel; i < job.maxLevel; i++) {
+      let timeToMaxLevel = this.estimateTimeToNextLevel(job);
+      if (timeToMaxLevel === Infinity) {
+        console.groupEnd();
+        return Infinity;
+      }
+      console.log(
+        job.currentLevel,
+        '=>',
+        job.currentLevel + 1,
+        ':',
+        Math.floor(timeToMaxLevel / 1000 / 60 / 60),
+        'h',
+        Math.floor((timeToMaxLevel / 1000 / 60) % 60),
+        'min',
+        '\nneeded exp:',
+        job.nextLevelExperience
+      );
+      job.gainExp(job.nextLevelExperience);
+      totalTime += timeToMaxLevel;
+    }
+    console.groupEnd();
+    return totalTime;
+  }
+
+  public levelingEstimations(): void {
+    console.group('Leveling estimations');
+    for (let job of JOBS) {
+      const jobCopy = Job.fromJSON(job);
+      let timeToMaxLevel = this.estimateTimeToMaxLevel(jobCopy);
+      console.log(
+        `Time to max level for ${jobCopy.type} : ${
+          timeToMaxLevel / 1000 / 60 / 60
+        } h`
+      );
+    }
+    console.groupEnd();
   }
 }

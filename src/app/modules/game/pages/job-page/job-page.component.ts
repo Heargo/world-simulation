@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RAW_RESOURCES } from '../../data/resources';
+import { ALL_RESOURCES } from '../../data/resources';
 import { JOB_RELATED_RESOURCES, Job, JobType } from '../../models/jobs';
 import { Resource } from '../../models/resources';
 
@@ -33,7 +33,7 @@ export class JobPageComponent extends BaseAppComponent implements OnInit {
       if (jobType != this.jobType) {
         this.jobType = jobType;
         this.job = this.playerService.player.getJob(jobType)!;
-        this.availableResources = Object.values(RAW_RESOURCES).filter(r =>
+        this.availableResources = Object.values(ALL_RESOURCES).filter(r =>
           JOB_RELATED_RESOURCES[jobType].includes(r.type)
         );
       }

@@ -284,6 +284,7 @@ export class LoadingService {
         oldGame.player,
         oldGame.saveTime
       );
+    this.playerService.levelingEstimations();
     if (gains.resources.length > 0 || gains.jobs.length > 0) {
       this.modalService.open<OfflineGain>(OfflineGainsModalComponent, {
         title: 'Offline gains',
