@@ -119,11 +119,10 @@ export class PlayerService {
     clearInterval(this.resourceHarvest);
 
     //consume the required resources to harvest the resource
-    if (resource.harvestRequiredResources) {
+    if (resource.harvestRequiredResources && Object.keys(resource.harvestRequiredResources).length > 0){
       this.player.inventory.removeMultiple(resource.harvestRequiredResources);
     }
     //collect it & gain experience
-    console.log('harvesting', resource.name, quantity);
     this.player.inventory.add(resource, quantity);
     this.player.gainExperienceFromHarvesting(resource, quantity);
 
@@ -155,15 +154,13 @@ export class PlayerService {
       return Infinity;
     }
     let bestResource = resources[0];
-    console.log('best resource to get to next level', bestResource.name);
     let xpPerMiliSecond =
       job.getExperienceGainedFromResourceHarvesting(bestResource) /
       job.getHarvestingSpeed(bestResource);
-
     return xpToNextLevel / xpPerMiliSecond;
   }
 
-  private estimateTimeToMaxLevel(job: Job): number {
+  private estimateTimeToMaxLevel(job: Job,logDetails:boolean=false): number {
     console.group(job.type);
     let totalTime = 0;
     for (let i = job.currentLevel; i < job.maxLevel; i++) {
@@ -172,18 +169,27 @@ export class PlayerService {
         console.groupEnd();
         return Infinity;
       }
-      console.log(
-        job.currentLevel,
-        '=>',
-        job.currentLevel + 1,
-        ':',
-        Math.floor(timeToMaxLevel / 1000 / 60 / 60),
-        'h',
-        Math.floor((timeToMaxLevel / 1000 / 60) % 60),
-        'min',
-        '\nneeded exp:',
-        job.nextLevelExperience
-      );
+      if(logDetails){
+        console.log(
+          job.currentLevel,
+          '=>',
+          job.currentLevel + 1,
+          ':',
+          Math.floor(timeToMaxLevel / 1000 / 60 / 60),
+          'h',
+          Math.floor((timeToMaxLevel / 1000 / 60) % 60),
+          'min',
+          "cumulated time: ",
+          Math.floor(totalTime / 1000 / 60 / 60),
+          'h',
+          Math.floor((totalTime / 1000 / 60) % 60),
+          'min',
+          Math.floor((totalTime / 1000) % 60),
+          's',
+          '\nneeded exp:',
+          job.nextLevelExperience
+          );
+        }
       job.gainExp(job.nextLevelExperience);
       totalTime += timeToMaxLevel;
     }
@@ -196,11 +202,20 @@ export class PlayerService {
     for (let job of JOBS) {
       const jobCopy = Job.fromJSON(job);
       let timeToMaxLevel = this.estimateTimeToMaxLevel(jobCopy);
-      console.log(
+      if( timeToMaxLevel / 1000 / 60 / 60 > 150){
+      console.warn(
         `Time to max level for ${jobCopy.type} : ${
           timeToMaxLevel / 1000 / 60 / 60
         } h`
       );
+      }else{
+        console.log(
+          `Time to max level for ${jobCopy.type} : ${
+            timeToMaxLevel / 1000 / 60 / 60
+          } h`
+        );
+      }
+
     }
     console.groupEnd();
   }

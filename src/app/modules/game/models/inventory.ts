@@ -66,7 +66,6 @@ export class Inventory {
   }
 
   removeMultiple(resources: { [key: string]: number }): void {
-    console.log('before', JSON.parse(JSON.stringify(this.content)));
     for (const key in resources) {
       const resource = this.content.find(el => el.resource.key === key);
       if (resource) {
@@ -78,7 +77,6 @@ export class Inventory {
         }
       }
     }
-    console.log('after', JSON.parse(JSON.stringify(this.content)));
   }
 
   hasResources(resources?: { [key: string]: number }): boolean {
