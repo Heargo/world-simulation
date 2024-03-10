@@ -53,6 +53,8 @@ export class Job {
     } else {
       this.nextLevelExperience = this.calculateExperienceToNextLevel();
     }
+
+
   }
 
   static fromJSON(data: any) {
@@ -85,7 +87,9 @@ export class Job {
   }
 
   calculateExperienceToNextLevel(): number {
-    return 1.5 ** this.currentLevel * 10;
+    const dif = 1/4*(this.currentLevel + 300 * (2**(this.currentLevel/7)))
+    this.nextLevelExperience = this.nextLevelExperience? this.nextLevelExperience:0;
+    return this.nextLevelExperience + Math.round(dif);
   }
 
   canHarvestResource(resource: Resource): boolean {
@@ -94,7 +98,7 @@ export class Job {
 
   getExperienceGainedFromResourceHarvesting(resource: Resource): number {
     if (this.canHarvestResource(resource)) {
-      return resource.value;
+      return 1/40*(resource.unlockLevel + 80 * (2**(resource.unlockLevel/10)))
     }
     return 0;
   }

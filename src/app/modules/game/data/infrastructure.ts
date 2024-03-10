@@ -59,8 +59,19 @@ export const INFRASTRUCTURES_STATS: { [key: string]: Infrastructure } = {
     production: {},
     relatedJobs: [JobType.Blacksmith],
   }),
+  workshop: new Infrastructure({
+    name: 'Workshop',
+    icon: 'workshop',
+    type: InfrastructureType.Job,
+    initialBuildingCost: { coin: 100, wood: 100, stone: 100 },
+    maintenanceFactor: 0.05,
+    production: {},
+    relatedJobs: [JobType.CraftsMan],
+  }),
+
 };
 
 export const DEFAULT_INFRASTRUCTURES: Infrastructure[] = [
   INFRASTRUCTURES_STATS['smithy'],
+  INFRASTRUCTURES_STATS['workshop'],
 ];

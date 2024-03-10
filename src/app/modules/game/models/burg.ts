@@ -149,11 +149,8 @@ export class Burg {
   }
 
   getResourceHarvestingQuantity(resource: Resource) {
-    console.log('available resources types are', this.availableResourcesTypes);
     if (this.availableResourcesTypes.includes(resource.type)) {
-      let factor = this.resourceTypeFactor[resource.type];
-      console.log('factor', factor, 'resource quantity', resource.quantity);
-
+      let factor = this.resourceTypeFactor[resource.type] ?? 1;
       return resource.quantity * factor;
     }
     return 0;
