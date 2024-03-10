@@ -1,5 +1,13 @@
 <img
+  *ngIf="!pixelated"
   [src]="'assets/icons/' + name + '.svg'"
   onError="this.src='assets/icons/default-icon.svg'"
   [alt]="name"
   [ngStyle]="{ width: size, height: size }" />
+
+<canvas
+  *ngIf="pixelated"
+  #canvas
+  [id]="'icon-' + name"
+  [width]="dim[0]"
+  [height]="dim[1]"></canvas>

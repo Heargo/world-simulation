@@ -2,7 +2,7 @@
   class="resource flex-row left middle"
   [ngClass]="{ notHarvestable: !(resource | canHarvest) }"
   *ngIf="job.currentLevel >= resource.unlockLevel; else locked">
-  <app-icon [name]="'default-resource'"></app-icon>
+  <app-icon [name]="resource.icon" [pixelated]="true"></app-icon>
   <p>{{ resource.name | translate }}</p>
   <div class="harvestingBarContainer">
     <div

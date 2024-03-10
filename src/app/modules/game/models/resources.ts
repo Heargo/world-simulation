@@ -33,7 +33,12 @@ export class Resource {
     else this.key = data.name.toLowerCase().split(' ').join('_');
 
     if (data.icon) this.icon = data.icon;
-    else this.icon = data.name.toLowerCase().split(' ').join('-');
+    else
+      this.icon =
+        'resources/' +
+        this.type.toLocaleLowerCase() +
+        '/' +
+        data.name.toLowerCase().split(' ').join('-');
 
     if (data.value) this.value = data.value;
     else this.value = 1;
