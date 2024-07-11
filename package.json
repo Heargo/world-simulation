@@ -21,10 +21,12 @@
     "@angular/router": "^16.2.12",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
+    "@types/random-seed": "^0.3.5",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "path-intersection": "^3.0.0",
     "prettier-eslint": "^16.1.1",
+    "random-seed": "^0.3.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.3"

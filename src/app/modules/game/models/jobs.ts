@@ -30,13 +30,15 @@ export class Job {
   maxLevel: number;
   currentExperience: number;
   nextLevelExperience: number;
+  levelingFactor: number;
 
   constructor(
     type: JobType,
     currentLevel: number,
     maxLevel: number,
     currentExperience?: number,
-    nextLevelExperience?: number
+    nextLevelExperience?: number,
+    levelingFactor?: number
   ) {
     this.type = type;
     this.currentLevel = currentLevel;
@@ -54,7 +56,11 @@ export class Job {
       this.nextLevelExperience = this.calculateExperienceToNextLevel();
     }
 
-
+    if (levelingFactor) {
+      this.levelingFactor = levelingFactor;
+    } else {
+      this.levelingFactor = 1;
+    }
   }
 
   static fromJSON(data: any) {
@@ -63,7 +69,8 @@ export class Job {
       data.currentLevel,
       data.maxLevel,
       data.currentExperience,
-      data.nextLevelExperience
+      data.nextLevelExperience,
+      data.levelingFactor
     );
   }
 
@@ -78,17 +85,20 @@ export class Job {
   gainExp(experience: number) {
     if (this.currentLevel === this.maxLevel) return;
     let expToCap = this.nextLevelExperience - this.currentExperience;
-    if (experience >= expToCap) {
+    if (experience * this.levelingFactor >= expToCap) {
       this.levelUp();
       this.gainExp(experience - expToCap);
     } else {
-      this.currentExperience += experience;
+      this.currentExperience += experience * this.levelingFactor;
     }
   }
 
   calculateExperienceToNextLevel(): number {
-    const dif = 1/4*(this.currentLevel + 300 * (2**(this.currentLevel/7)))
-    this.nextLevelExperience = this.nextLevelExperience? this.nextLevelExperience:0;
+    const dif =
+      (1 / 4) * (this.currentLevel + 300 * 2 ** (this.currentLevel / 7));
+    this.nextLevelExperience = this.nextLevelExperience
+      ? this.nextLevelExperience
+      : 0;
     return this.nextLevelExperience + Math.round(dif);
   }
 
@@ -98,7 +108,10 @@ export class Job {
 
   getExperienceGainedFromResourceHarvesting(resource: Resource): number {
     if (this.canHarvestResource(resource)) {
-      return 1/40*(resource.unlockLevel + 80 * (2**(resource.unlockLevel/10)))
+      return (
+        (1 / 40) *
+        (resource.unlockLevel + 80 * 2 ** (resource.unlockLevel / 10))
+      );
     }
     return 0;
   }

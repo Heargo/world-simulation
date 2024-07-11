@@ -18,9 +18,10 @@ export class PlayerService {
 
   load(player: Player): void {
     this.player = player;
+    const state = player.getState();
     //based on the player's state, we can re-trigger the harvesting
-    if (player.etat.currentHarvest) {
-      this.harvest(player.etat.currentHarvest, true);
+    if (state.currentHarvest) {
+      this.harvest(state.currentHarvest, true);
     }
   }
 
@@ -35,10 +36,12 @@ export class PlayerService {
       timeOffline: spanBetweenLastUpdate,
     };
 
-    //calculate gain over time from player etat
-    if (player.etat.currentHarvest) {
-      const resource: Resource = player.etat.currentHarvest;
-      const job: Job = player.etat.currentJobActive!;
+    const state = player.getState();
+
+    //calculate gain over time from player state
+    if (state.currentHarvest) {
+      const resource: Resource = state.currentHarvest;
+      const job: Job = state.currentJobActive!;
       //time to perform the harvest in ms
       const speed: number = job.getHarvestingSpeed(resource) || 0;
       const quantityFactor: number =
@@ -86,14 +89,17 @@ export class PlayerService {
     if (this.resourceHarvest) {
       clearInterval(this.resourceHarvest);
     }
-    this.player.etat.currentJobActive = undefined;
-    this.player.etat.currentHarvest = undefined;
+
+    this.player.updateState({
+      currentHarvest: undefined,
+      currentJobActive: undefined,
+    });
   }
 
   harvest(resource: Resource, forceHarvest: boolean = false): void {
     if (!this.canHarvestResource(resource)) return;
     if (
-      this.player.etat.currentHarvest?.name === resource.name &&
+      this.player.getState().currentHarvest?.name === resource.name &&
       !forceHarvest
     ) {
       this.stopHarvesting();
@@ -119,7 +125,10 @@ export class PlayerService {
     clearInterval(this.resourceHarvest);
 
     //consume the required resources to harvest the resource
-    if (resource.harvestRequiredResources && Object.keys(resource.harvestRequiredResources).length > 0){
+    if (
+      resource.harvestRequiredResources &&
+      Object.keys(resource.harvestRequiredResources).length > 0
+    ) {
       this.player.inventory.removeMultiple(resource.harvestRequiredResources);
     }
     //collect it & gain experience
@@ -160,7 +169,10 @@ export class PlayerService {
     return xpToNextLevel / xpPerMiliSecond;
   }
 
-  private estimateTimeToMaxLevel(job: Job,logDetails:boolean=false): number {
+  private estimateTimeToMaxLevel(
+    job: Job,
+    logDetails: boolean = false
+  ): number {
     console.group(job.type);
     let totalTime = 0;
     for (let i = job.currentLevel; i < job.maxLevel; i++) {
@@ -169,7 +181,7 @@ export class PlayerService {
         console.groupEnd();
         return Infinity;
       }
-      if(logDetails){
+      if (logDetails) {
         console.log(
           job.currentLevel,
           '=>',
@@ -179,7 +191,7 @@ export class PlayerService {
           'h',
           Math.floor((timeToMaxLevel / 1000 / 60) % 60),
           'min',
-          "cumulated time: ",
+          'cumulated time: ',
           Math.floor(totalTime / 1000 / 60 / 60),
           'h',
           Math.floor((totalTime / 1000 / 60) % 60),
@@ -188,8 +200,8 @@ export class PlayerService {
           's',
           '\nneeded exp:',
           job.nextLevelExperience
-          );
-        }
+        );
+      }
       job.gainExp(job.nextLevelExperience);
       totalTime += timeToMaxLevel;
     }
@@ -202,20 +214,19 @@ export class PlayerService {
     for (let job of JOBS) {
       const jobCopy = Job.fromJSON(job);
       let timeToMaxLevel = this.estimateTimeToMaxLevel(jobCopy);
-      if( timeToMaxLevel / 1000 / 60 / 60 > 150){
-      console.warn(
-        `Time to max level for ${jobCopy.type} : ${
-          timeToMaxLevel / 1000 / 60 / 60
-        } h`
-      );
-      }else{
+      if (timeToMaxLevel / 1000 / 60 / 60 > 150) {
+        console.warn(
+          `Time to max level for ${jobCopy.type} : ${
+            timeToMaxLevel / 1000 / 60 / 60
+          } h`
+        );
+      } else {
         console.log(
           `Time to max level for ${jobCopy.type} : ${
             timeToMaxLevel / 1000 / 60 / 60
           } h`
         );
       }
-
     }
     console.groupEnd();
   }

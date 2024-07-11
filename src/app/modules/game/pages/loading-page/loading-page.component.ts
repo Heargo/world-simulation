@@ -8,6 +8,7 @@ import { Game, GamePreview } from '../../models/game';
 import { DbEntry } from '../../models/db';
 import { ModalService } from '../../../../core/services/modal/modal.service';
 import { SaveModalComponent } from '../../components/modal/save-modal/save-modal.component';
+import { NpcService } from '../../services/npc.service';
 
 @Component({
   selector: 'app-loading-page',
@@ -20,12 +21,15 @@ export class LoadingPageComponent implements OnInit {
 
   constructor(
     public readonly loadingService: LoadingService,
+    private readonly npcService: NpcService,
     private readonly toasts: ToastService,
     private readonly router: Router,
     private readonly modalService: ModalService
   ) {}
 
-  async ngOnInit(): Promise<void> {}
+  async ngOnInit(): Promise<void> {
+    this.npcService.testRandomRarity();
+  }
 
   async onStartGame(): Promise<void> {
     this.modalService

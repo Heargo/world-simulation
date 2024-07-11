@@ -8,7 +8,7 @@
     <div
       class="bar"
       [ngClass]="{
-        active: playerService.player.etat.currentHarvest?.name === resource.name
+        active: playerService.player.state.currentHarvest?.name === resource.name
       }"
       [ngStyle]="{
         animationDuration: resource | harvestSpeed: job.currentLevel

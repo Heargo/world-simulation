@@ -2,22 +2,22 @@
   <!-- start -->
   <div class="flex-row w-100 middle left">
     <div
-      *ngIf="playerService.player.etat.currentJobActive"
+      *ngIf="playerService.player.state.currentJobActive"
       class="flex-row w-100 middle left">
       <p>
-        {{ playerService.player.etat.currentJobActive.type | translate }}
+        {{ playerService.player.state.currentJobActive.type | translate }}
       </p>
       <div class="bar-container w-100">
         <p class="text">
-          {{ playerService.player.etat.currentJobActive.currentExperience }} /
-          {{ playerService.player.etat.currentJobActive.nextLevelExperience }}
+          {{ playerService.player.state.currentJobActive.currentExperience }} /
+          {{ playerService.player.state.currentJobActive.nextLevelExperience }}
         </p>
         <div
           class="bar"
           [ngStyle]="{
             width:
-              (playerService.player.etat.currentJobActive.currentExperience /
-                playerService.player.etat.currentJobActive
+              (playerService.player.state.currentJobActive.currentExperience /
+                playerService.player.state.currentJobActive
                   .nextLevelExperience) *
                 100 +
               '%'
